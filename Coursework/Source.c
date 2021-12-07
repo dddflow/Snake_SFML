@@ -6,7 +6,7 @@
 #include <stdlib.h>
 #include <time.h>
 
-// qt in visual studio
+// sfml in visual studio
 
 FILE* file;
 
