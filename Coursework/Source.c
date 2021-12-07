@@ -6,6 +6,8 @@
 #include <stdlib.h>
 #include <time.h>
 
+// qt in visual studio
+
 FILE* file;
 
 struct list_node* rec = NULL;
