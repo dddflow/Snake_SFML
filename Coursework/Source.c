@@ -10,10 +10,8 @@ FILE* file;
 
 struct list_node* rec = NULL;
 
-void print_list(struct list_node* start_ptr_list)
-{
-	while (start_ptr_list != NULL)
-	{
+void print_list(struct list_node* start_ptr_list) {
+	while (start_ptr_list != NULL) {
 		fprintf(file, "%d ", start_ptr_list->value);
 		fputs(start_ptr_list->name, file);
 		fputs("\n", file);
