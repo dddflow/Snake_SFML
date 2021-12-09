@@ -46,7 +46,7 @@ void print_records(struct list_node* start_ptr_list)
     int i = 2;
     while (start_ptr_list != NULL && i < 22)
     {
-        gotoxy(1, 1 + i);
+        //gotoxy(1, 1 + i);
         printf("%d) %d ", i / 2, start_ptr_list->value);
         puts(start_ptr_list->name);
         start_ptr_list = start_ptr_list->ptr_next;
