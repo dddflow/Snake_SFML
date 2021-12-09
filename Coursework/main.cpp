@@ -1,8 +1,10 @@
 #define _CRT_SECURE_NO_WARNINGS
+#define SFML_NO_DEPRECATED_WARNINGS
 
 #include <SFML/Graphics.hpp>
 #include "list.h"
 #include <iostream>
+#include <cassert>
 
 using namespace std;
 using namespace sf;
@@ -26,6 +28,8 @@ void records();
 int main()
 {
 	file = fopen("records.txt", "a+");
+
+    setlocale(LC_ALL, "Rus");
 
 	while (!feof(file))
 	{
@@ -101,13 +105,9 @@ void main_menu()
     menu6.setPosition(menu6_pos[0], menu6_pos[1]);
     menu6.setScale(0.7f, 0.7f);
 
-    bool isMenu = 1;
-    int menu_num = 0;
-
-    while (isMenu)
+    bool work = 1;
+    while (work)
     {
-        int menuNum = 0;
-
         window.clear(sf::Color::White);
 
         while (window.isOpen())
@@ -120,43 +120,21 @@ void main_menu()
             menu6.setColor(Color::Black);
 
             if (IntRect(menu1_pos[0], menu1_pos[1], 400, 50).contains(Mouse::getPosition(window))) 
-            { 
                 menu1.setColor(Color::Blue);
-                menuNum = 1; 
-            }
             if (IntRect(menu2_pos[0], menu2_pos[1], 370, 50).contains(Mouse::getPosition(window)))
-            {
                 menu2.setColor(Color::Blue);
-                menuNum = 2; 
-            }
             if (IntRect(menu3_pos[0], menu3_pos[1], 650, 50).contains(Mouse::getPosition(window)))
-            {
                 menu3.setColor(Color::Blue);
-                menuNum = 3;
-            }
             if (IntRect(menu4_pos[0], menu4_pos[1], 430, 50).contains(Mouse::getPosition(window)))
-            {
                 menu4.setColor(Color::Blue);
-                menuNum = 4;
-            }
             if (IntRect(menu5_pos[0], menu5_pos[1], 280, 50).contains(Mouse::getPosition(window)))
-            {
                 menu5.setColor(Color::Blue);
-                menuNum = 5;
-            }
             if (IntRect(menu6_pos[0], menu6_pos[1], 220, 50).contains(Mouse::getPosition(window)))
-            {
                 menu6.setColor(Color::Blue);
-                menuNum = 6;
-            }
-
 
             Event event;
             while (window.pollEvent(event))
             {
-                if (event.type == sf::Event::Closed)
-                    window.close();
-
                 if (event.type == event.MouseButtonReleased && event.mouseButton.button == Mouse::Left && \
                     IntRect(menu1_pos[0], menu1_pos[1], 400, 50).contains(Mouse::getPosition(window)))
                     game_menu();
@@ -178,11 +156,23 @@ void main_menu()
                     faq();
 
                 if (event.type == event.MouseButtonReleased && event.mouseButton.button == Mouse::Left && \
-                    IntRect(menu6_pos[0], menu6_pos[1], 220, 50).contains(Mouse::getPosition(window))) 
-                        return;
+                    IntRect(menu6_pos[0], menu6_pos[1], 220, 50).contains(Mouse::getPosition(window)))
+                {
+                    window.close();
+                    work = 0;
+                }
 
-                if (Keyboard::isKeyPressed(Keyboard::Escape)) 
-                    return;
+                if (event.type == Event::KeyReleased && event.key.code == Keyboard::Escape)
+                {
+                    window.close();
+                    work = 0;
+                }
+
+                if (event.type == sf::Event::Closed)
+                {
+                    window.close();
+                    work = 0;
+                }
             }
 
             window.draw(menu1);
@@ -216,7 +206,75 @@ void records()
 
 void about()
 {
-    cout << "NOT READY!\n";
+    RenderWindow window(sf::VideoMode(1400, 1400), "Snake");
+    
+    Texture headerTexture;
+    headerTexture.loadFromFile("\\\\Mac\\Home\\Desktop\\University\\3 SEM\\Programming languages\\Coursework\\Pics\\About.png");
+    headerTexture.setSmooth(true);
+
+    Sprite header(headerTexture);
+    int header_pos[2] = { 500, 50 };
+    header.setPosition(header_pos[0], header_pos[1]);
+    header.setScale(0.7f, 0.7f);
+    header.setColor(Color::Black);
+
+    Texture backTexture;
+    backTexture.loadFromFile("\\\\Mac\\Home\\Desktop\\University\\3 SEM\\Programming languages\\Coursework\\Pics\\Back.png");
+    headerTexture.setSmooth(true);
+
+    Sprite back_button(backTexture);
+    int back_pos[2] = { 600, 900 };
+    back_button.setPosition(back_pos[0], back_pos[1]);
+    back_button.setScale(0.7f, 0.7f);
+
+    window.clear(sf::Color::White);
+
+    Font font;
+    assert(font.loadFromFile("\\\\Mac\\Home\\Desktop\\University\\3 SEM\\Programming languages\\Coursework\\Fonts\\Segoe Print\\segoeprint.ttf"));
+
+    Text text("", font, 40);
+    text.setColor(Color::Black);
+    text.setString(L"Игра змейка TM\nРазработчики Данилов Денис и Багров Егор,\nгруппа 4851003\\00002, Политех, ИКиЗИ\n2021 год\n");
+    text.setPosition(50, 200);
+
+    bool work = 1;
+    while (work)
+    {
+        back_button.setColor(Color::Black);
+
+        if (IntRect(back_pos[0], back_pos[1], 300, 50).contains(Mouse::getPosition(window)))
+            back_button.setColor(Color::Blue);
+
+        Event event;
+        while (window.pollEvent(event))
+        {
+            if (event.type == Event::KeyReleased && event.key.code == Keyboard::Escape)
+            {
+                window.close();
+                work = 0;
+            }
+
+            if (event.type == event.MouseButtonReleased && event.mouseButton.button == Mouse::Left && \
+                IntRect(back_pos[0], back_pos[1], 300, 50).contains(Mouse::getPosition(window)))
+            {
+                window.close();
+                work = 0;
+            }
+
+            if (event.type == sf::Event::Closed)
+            {
+                window.close();
+                work = 0;
+            }
+        }
+        window.draw(header);
+        window.draw(text);
+        window.draw(back_button);
+
+        window.display();
+    }
+     
+    return;
 }
 
 void faq()
