@@ -281,5 +281,77 @@ void about()
 
 void faq()
 {
-    cout << "NOT READY!\n";
+    RenderWindow window(sf::VideoMode(1400, 1400), "Snake");
+    window.setPosition(Vector2i(650, 100));
+
+    Texture headerTexture;
+    headerTexture.loadFromFile("\\\\Mac\\Home\\Desktop\\University\\3 SEM\\Programming languages\\Coursework\\Pics\\About.png");
+    headerTexture.setSmooth(true);
+
+    Sprite header(headerTexture);
+    int header_pos[2] = { 500, 50 };
+    header.setPosition(header_pos[0], header_pos[1]);
+    header.setScale(0.7f, 0.7f);
+    header.setColor(Color::Black);
+
+    Texture backTexture;
+    backTexture.loadFromFile("\\\\Mac\\Home\\Desktop\\University\\3 SEM\\Programming languages\\Coursework\\Pics\\Back.png");
+    headerTexture.setSmooth(true);
+
+    Sprite back_button(backTexture);
+    int back_pos[2] = { 600, 1250 };
+    back_button.setPosition(back_pos[0], back_pos[1]);
+    back_button.setScale(0.7f, 0.7f);
+
+    window.clear(sf::Color::White);
+
+    Font font;
+    assert(font.loadFromFile("\\\\Mac\\Home\\Desktop\\University\\3 SEM\\Programming languages\\Coursework\\Fonts\\Segoe Print\\segoeprint.ttf"));
+
+    Text text("", font, 40);
+    text.setColor(Color::Black);
+    text.setString(L"-Цель игры: \n Собирать еду, избегая столкновения с собственным\n хвостом и  краями игрового поля.\n\
+-Управление в игре: \n Нажмите Q / ESC для выхода. \n Нажмите P для паузы. \n-Перемещение для 1 игрока:\n \
+Cтрелки вверх / вниз / влево / вправо.\n-Перемещение для 2 игрока:\n Kлавиши W / A / S / D.\n-Обозначения : \n # --еда\n * **-- 1 змейка\n \
++++ -- 2 змейка\n @ -- препятсвия");
+    text.setPosition(50, 200);
+
+    bool work = 1;
+    while (work)
+    {
+        back_button.setColor(Color::Black);
+
+        if (IntRect(back_pos[0], back_pos[1], 300, 50).contains(Mouse::getPosition(window)))
+            back_button.setColor(Color::Blue);
+
+        Event event;
+        while (window.pollEvent(event))
+        {
+            if (event.type == Event::KeyReleased && event.key.code == Keyboard::Escape)
+            {
+                window.close();
+                work = 0;
+            }
+
+            if (event.type == event.MouseButtonReleased && event.mouseButton.button == Mouse::Left && \
+                IntRect(back_pos[0], back_pos[1], 300, 50).contains(Mouse::getPosition(window)))
+            {
+                window.close();
+                work = 0;
+            }
+
+            if (event.type == sf::Event::Closed)
+            {
+                window.close();
+                work = 0;
+            }
+        }
+        window.draw(header);
+        window.draw(text);
+        window.draw(back_button);
+
+        window.display();
+    }
+
+    return;
 }
