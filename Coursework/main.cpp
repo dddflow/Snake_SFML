@@ -54,6 +54,7 @@ int main()
 void main_menu()
 {
     RenderWindow window(sf::VideoMode(1400, 1400), "Snake");
+    window.setPosition(Vector2i(650,100));
 
     Texture menuTexture[6];
     menuTexture[0].loadFromFile("\\\\Mac\\Home\\Desktop\\University\\3 SEM\\Programming languages\\Coursework\\Pics\\NewGame.png");
@@ -207,6 +208,7 @@ void records()
 void about()
 {
     RenderWindow window(sf::VideoMode(1400, 1400), "Snake");
+    window.setPosition(Vector2i(650, 100));
     
     Texture headerTexture;
     headerTexture.loadFromFile("\\\\Mac\\Home\\Desktop\\University\\3 SEM\\Programming languages\\Coursework\\Pics\\About.png");
