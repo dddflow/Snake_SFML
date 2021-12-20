@@ -5,6 +5,7 @@
 #include "list.h"
 #include <iostream>
 #include <cassert>
+#include <vector>
 
 using namespace std;
 using namespace sf;
@@ -24,6 +25,9 @@ void game_pvp();
 void game_pve();
 void game_pause();
 void records();
+
+const int max_snake = 1e4;
+int score1;
 
 int main()
 {
@@ -90,7 +94,7 @@ void main_menu()
     menu2.setPosition(menu2_pos[0], menu2_pos[1]);
     menu2.setScale(0.7f, 0.7f);
 
-    int menu3_pos[2] = { 400, 550 };
+    int menu3_pos[2] = { 400, 555 };
     menu3.setPosition(menu3_pos[0], menu3_pos[1]);
     menu3.setScale(0.7f, 0.7f);
 
@@ -192,7 +196,109 @@ void main_menu()
 
 void game_menu()
 {
-    cout << "NOT READY!\n";
+    RenderWindow window(sf::VideoMode(1400, 1400), "Snake");
+    window.setPosition(Vector2i(650, 100));
+
+    Texture menuTexture[4];
+    menuTexture[0].loadFromFile("\\\\Mac\\Home\\Desktop\\University\\3 SEM\\Programming languages\\Coursework\\Pics\\1player.png");
+    menuTexture[0].setSmooth(true);
+
+    menuTexture[1].loadFromFile("\\\\Mac\\Home\\Desktop\\University\\3 SEM\\Programming languages\\Coursework\\Pics\\PVP.png");
+    menuTexture[1].setSmooth(true);
+
+    menuTexture[2].loadFromFile("\\\\Mac\\Home\\Desktop\\University\\3 SEM\\Programming languages\\Coursework\\Pics\\PVE.png");
+    menuTexture[2].setSmooth(true);
+
+    menuTexture[3].loadFromFile("\\\\Mac\\Home\\Desktop\\University\\3 SEM\\Programming languages\\Coursework\\Pics\\Back.png");
+    menuTexture[3].setSmooth(true);
+
+    Sprite menu1(menuTexture[0]), \
+        menu2(menuTexture[1]), \
+        menu3(menuTexture[2]), \
+        menu4(menuTexture[3]);
+
+    int menu1_pos[2] = { 550, 420 };
+    menu1.setPosition(menu1_pos[0], menu1_pos[1]);
+    menu1.setScale(0.7f, 0.7f);
+
+    int menu2_pos[2] = { 530, 500 };
+    menu2.setPosition(menu2_pos[0], menu2_pos[1]);
+    menu2.setScale(0.7f, 0.7f);
+
+    int menu3_pos[2] = { 360, 600 };
+    menu3.setPosition(menu3_pos[0], menu3_pos[1]);
+    menu3.setScale(0.7f, 0.7f);
+
+    int menu4_pos[2] = { 580, 700 };
+    menu4.setPosition(menu4_pos[0], menu4_pos[1]);
+    menu4.setScale(0.7f, 0.7f);
+
+    bool work = 1;
+    while (work)
+    {
+        window.clear(sf::Color::White);
+
+        while (window.isOpen())
+        {
+            menu1.setColor(Color::Black);
+            menu2.setColor(Color::Black);
+            menu3.setColor(Color::Black);
+            menu4.setColor(Color::Black);
+
+            if (IntRect(menu1_pos[0], menu1_pos[1], 280, 50).contains(Mouse::getPosition(window)))
+                menu1.setColor(Color::Blue);
+            if (IntRect(menu2_pos[0], menu2_pos[1], 330, 50).contains(Mouse::getPosition(window)))
+                menu2.setColor(Color::Blue);
+            if (IntRect(menu3_pos[0], menu3_pos[1], 670, 50).contains(Mouse::getPosition(window)))
+                menu3.setColor(Color::Blue);
+            if (IntRect(menu4_pos[0], menu4_pos[1], 220, 50).contains(Mouse::getPosition(window)))
+                menu4.setColor(Color::Blue);
+
+            Event event;
+            while (window.pollEvent(event))
+            {
+                if (event.type == event.MouseButtonReleased && event.mouseButton.button == Mouse::Left && \
+                    IntRect(menu1_pos[0], menu1_pos[1], 280, 50).contains(Mouse::getPosition(window)))
+                    game();
+
+                if (event.type == event.MouseButtonReleased && event.mouseButton.button == Mouse::Left && \
+                    IntRect(menu2_pos[0], menu2_pos[1], 330, 50).contains(Mouse::getPosition(window)))
+                    game_pvp();
+
+                if (event.type == event.MouseButtonReleased && event.mouseButton.button == Mouse::Left && \
+                    IntRect(menu3_pos[0], menu3_pos[1], 670, 50).contains(Mouse::getPosition(window)))
+                    game_pve();
+
+                if (event.type == event.MouseButtonReleased && event.mouseButton.button == Mouse::Left && \
+                    IntRect(menu4_pos[0], menu4_pos[1], 220, 50).contains(Mouse::getPosition(window)))
+                {
+                    window.close();
+                    work = 0;
+                }
+
+                if (event.type == Event::KeyReleased && event.key.code == Keyboard::Escape)
+                {
+                    window.close();
+                    work = 0;
+                }
+
+                if (event.type == sf::Event::Closed)
+                {
+                    window.close();
+                    work = 0;
+                }
+            }
+
+            window.draw(menu1);
+            window.draw(menu2);
+            window.draw(menu3);
+            window.draw(menu4);
+
+            window.display();
+        }
+    }
+
+    return;
 }
 
 void difficulty()
@@ -354,4 +460,85 @@ Cтрелки вверх / вниз / влево / вправо.\n-Перемещение для 2 игрока:\n Kлавиши W /
     }
 
     return;
+}
+
+void game()
+{
+    int x = 10, y = 10, step = 30;
+    int max_x = 1400 - step - x, max_y = 1400 - step - y;
+    score1 = 0;
+
+    RenderWindow window(sf::VideoMode(1400, 1400), "Snake");
+    window.setPosition(Vector2i(650, 100));
+    window.clear(Color::White);
+
+    vector <int> snake_x(3, 0);
+    vector <int> snale_y(3, 0);
+   
+
+
+    bool work = 1;
+    while (work)
+    {
+        Event event;
+        while (window.pollEvent(event))
+        {
+            if (event.type == Event::KeyReleased && event.key.code == Keyboard::Escape)
+            {
+                window.close();
+                work = 0;
+            }
+
+            if (event.type == sf::Event::Closed)
+            {
+                window.close();
+                work = 0;
+            }
+        }
+
+        for (int i = x; i <= max_x; i += step)
+        {
+            RectangleShape rectangle(Vector2f(step, step));
+            rectangle.setPosition(i, x);
+            rectangle.setFillColor(Color::Black);
+            window.draw(rectangle);
+        }
+
+        for (int i = x; i <= max_x; i += step)
+        {
+            RectangleShape rectangle(Vector2f(step, step));
+            rectangle.setPosition(i, max_x);
+            rectangle.setFillColor(Color::Black);
+            window.draw(rectangle);
+        }
+
+        for (int i = y; i <= max_y; i += step)
+        {
+            RectangleShape rectangle(Vector2f(step, step));
+            rectangle.setPosition(y, i);
+            rectangle.setFillColor(Color::Black);
+            window.draw(rectangle);
+        }
+
+        for (int i = x; i <= max_x; i += step)
+        {
+            RectangleShape rectangle(Vector2f(step, step));
+            rectangle.setPosition(max_y, i);
+            rectangle.setFillColor(Color::Black);
+            window.draw(rectangle);
+        }
+
+        window.display();
+    }
+
+}
+
+void game_pvp()
+{
+    cout << "NOT READY!\n";
+}
+
+void game_pve()
+{
+    cout << "NOT READY!\n";
 }
