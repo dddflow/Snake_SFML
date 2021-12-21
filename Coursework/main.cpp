@@ -26,7 +26,7 @@ void main_menu();
 void about();
 void faq();
 void game();
-void you_lose(int c);
+void you_lose();
 void difficulty();
 void game_menu();
 void game_pvp();
@@ -34,7 +34,7 @@ void game_pve();
 void game_pause();
 void records();
 
-const int max_snake = 1e4;
+const int max_snake = 3000;
 int score1;
 
 int main()
@@ -336,14 +336,14 @@ void about()
 
     Texture backTexture;
     backTexture.loadFromFile("\\\\Mac\\Home\\Desktop\\University\\3 SEM\\Programming languages\\Coursework\\Pics\\Back.png");
-    headerTexture.setSmooth(true);
+    backTexture.setSmooth(true);
 
     Sprite back_button(backTexture);
     int back_pos[2] = { 600, 900 };
     back_button.setPosition(back_pos[0], back_pos[1]);
     back_button.setScale(0.7f, 0.7f);
 
-    window.clear(sf::Color::White);
+    window.clear(Color::White);
 
     Font font;
     assert(font.loadFromFile("\\\\Mac\\Home\\Desktop\\University\\3 SEM\\Programming languages\\Coursework\\Fonts\\Segoe Print\\segoeprint.ttf"));
@@ -410,7 +410,7 @@ void faq()
 
     Texture backTexture;
     backTexture.loadFromFile("\\\\Mac\\Home\\Desktop\\University\\3 SEM\\Programming languages\\Coursework\\Pics\\Back.png");
-    headerTexture.setSmooth(true);
+    backTexture.setSmooth(true);
 
     Sprite back_button(backTexture);
     int back_pos[2] = { 600, 1250 };
@@ -472,11 +472,14 @@ Cтрелки вверх / вниз / влево / вправо.\n-Перемещение для 2 игрока:\n Kлавиши W /
 
 void game()
 {
-    int min_x = 10, min_y = 10, step = 30;
-    int max_x = 1400 - step - min_x, max_y = 1400 - step - min_y;
+    dot min_pos = { 10, 10 };
+    int step = 30;
+    dot max_pos = {1400 - step - min_pos.x, 1400 - step - min_pos.y };
+    dot food_pos;
+    bool eaten = 1;
     score1 = 0;
 
-    RenderWindow window(sf::VideoMode(1400, 1400), "Snake");
+    RenderWindow window(VideoMode(1400, 1400), "Snake");
     window.setPosition(Vector2i(650, 100));
 
     Texture headUPTexture;
@@ -505,37 +508,166 @@ void game()
     headDOWN.setScale(0.09, 0.09);
     headDOWN.setOrigin(90, 0);
 
+    Texture foodTexture;
+    foodTexture.loadFromFile("\\\\Mac\\Home\\Desktop\\University\\3 SEM\\Programming languages\\Coursework\\Pics\\Food.png");
+    Sprite food(foodTexture);
+    food.setScale(0.03, 0.03);
 
+    Texture pauseTexture;
+    pauseTexture.loadFromFile("\\\\Mac\\Home\\Desktop\\University\\3 SEM\\Programming languages\\Coursework\\Pics\\Pause.png");
+    Sprite pauseButton(pauseTexture);
+    pauseButton.setScale(0.05, 0.05);
+    pauseButton.setPosition(max_pos.x - 2*step, min_pos.y + 1.5*step);
 
     int snake_len = 3;
     vector <dot> snake(snake_len);
    
-    snake[0].x = min_x + 3*step;
-    snake[1].x = min_x + 2*step;
-    snake[2].x = min_x + step;
-    snake[0].y = min_y + step;
-    snake[1].y = min_y + step;
-    snake[2].y = min_y + step;
+    snake[0].x = min_pos.x + 3*step;
+    snake[1].x = min_pos.x + 2*step;
+    snake[2].x = min_pos.x + step;
+    snake[0].y = min_pos.y + step;
+    snake[1].y = min_pos.y + step;
+    snake[2].y = min_pos.y + step;
 
-    CircleShape snake_item[3];
+    CircleShape snake_item[max_snake];
 
     directions direction = RIGHT;
 
     Sprite head = headRIGHT;
 
+    dot tail;
 
-    bool work = 1, dir_changed = 0;
+    bool end_game = 0, pause_game = 0;
+
+    bool first = 1, work = 1, dir_changed = 0;
     int cnt = 0, m = 7;
     while (work)
-    {    
-
-        window.clear(Color::White);
-        for (int i = 1; i < snake_len; i++)
+    { 
+        if (!end_game && !pause_game)
         {
-            snake_item[i].setRadius(step / 2);
-            snake_item[i].setPosition(snake[i].x, snake[i].y);
-            snake_item[i].setFillColor(Color::Green);
+            window.clear(Color::White);
+
+            for (int i = 1; i < snake_len; i++)
+            {
+                snake_item[i].setRadius(step / 2);
+                snake_item[i].setPosition(snake[i].x, snake[i].y);
+                snake_item[i].setFillColor(Color::Green);
+            }
+
+            if (eaten)
+            {
+                srand(time(0));
+                food_pos.x = (rand() % ((max_pos.x - min_pos.x) / step - 2)) * step + min_pos.x + step;
+                food_pos.y = (rand() % ((max_pos.x - min_pos.x) / step - 2)) * step + min_pos.y + step;
+                if (!first)
+                {
+                    snake.push_back(tail);
+                    snake_len++;
+                }
+                first = false;
+                eaten = false;
+            }
+            food.setPosition(food_pos.x, food_pos.y);
+
+            for (int i = min_pos.x; i <= max_pos.x; i += step)
+            {
+                RectangleShape border(Vector2f(step, step));
+                border.setPosition(i, min_pos.x);
+                border.setFillColor(Color::Black);
+                window.draw(border);
+            }
+            for (int i = min_pos.x; i <= max_pos.x; i += step)
+            {
+                RectangleShape border(Vector2f(step, step));
+                border.setPosition(i, max_pos.x);
+                border.setFillColor(Color::Black);
+                window.draw(border);
+            }
+            for (int i = min_pos.y; i <= max_pos.y; i += step)
+            {
+                RectangleShape border(Vector2f(step, step));
+                border.setPosition(min_pos.y, i);
+                border.setFillColor(Color::Black);
+                window.draw(border);
+            }
+            for (int i = min_pos.x; i <= max_pos.x; i += step)
+            {
+                RectangleShape border(Vector2f(step, step));
+                border.setPosition(max_pos.y, i);
+                border.setFillColor(Color::Black);
+                window.draw(border);
+            }
+
+            head.setPosition(snake[0].x, snake[0].y);
+            window.draw(food);
+            window.draw(head);
+            for (int i = 1; i < snake_len; i++)
+                {
+                    window.draw(snake_item[i]);
+                }
+
+            if (cnt == m - 1)
+            {
+                dir_changed = 0;
+
+                tail = snake[snake_len - 1];
+
+                for (int i = snake_len - 1; i > 0; i--)
+                {
+                    snake[i].x = snake[i - 1].x;
+                    snake[i].y = snake[i - 1].y;
+                }
+
+                switch (direction)
+                {
+                    case UP:
+                    {
+                        snake[0].y -= step;
+                        break;
+                    }
+                    case RIGHT:
+                    {
+                        snake[0].x += step;
+                        break;
+                    }
+                    case DOWN:
+                    {
+                        snake[0].y += step;
+                        break;
+                    }
+                    case LEFT:
+                    {
+                        snake[0].x -= step;
+                        break;
+                    }
+                }
+
+                if (snake[0].x == food_pos.x && snake[0].y == food_pos.y)
+                    eaten = true;
+
+                if (snake[0].x == min_pos.x || snake[0].x == max_pos.x || snake[0].y == min_pos.y || snake[0].y == max_pos.y)
+                {
+                    you_lose();
+                    end_game = 1;
+                }
+
+                for (int i = 1; i < snake_len; i++)
+                    if (snake[0].x == snake[i].x && snake[0].y == snake[i].y)
+                    {
+                        you_lose();
+                        end_game = 1;
+                    }
+            }
+
+            cnt = (cnt + 1) % m;
+           
         }
+ 
+        pauseButton.setColor(Color(0, 0, 0, 100));
+        if (IntRect(max_pos.x - 2 * step, min_pos.y + 1.5 * step, 50, 50).contains(Mouse::getPosition(window)))
+            pauseButton.setColor(Color::Blue);
+
+        window.draw(pauseButton);
 
         Event event;
         while (window.pollEvent(event))
@@ -550,6 +682,22 @@ void game()
             {
                 window.close();
                 work = 0;
+            }
+
+            if (event.type == event.MouseButtonReleased && event.mouseButton.button == Mouse::Left && \
+                IntRect(max_pos.x - 2 * step, min_pos.y + 1.5 * step, 50, 50).contains(Mouse::getPosition(window)) || \
+                event.type == Event::KeyReleased && event.key.code == Keyboard::P)
+            {
+                if (pause_game)
+                {
+                    pause_game = false;
+                    pauseButton.setColor(Color(0, 0, 0, 128));
+                }
+                else
+                {
+                    pause_game = true;
+                    pauseButton.setColor(Color::Black);
+                }
             }
 
             if (!dir_changed)
@@ -585,78 +733,6 @@ void game()
             }
         }
 
-        for (int i = min_x; i <= max_x; i += step)
-        {
-            RectangleShape border(Vector2f(step, step));
-            border.setPosition(i, min_x);
-            border.setFillColor(Color::Black);
-            window.draw(border);
-        }
-        for (int i = min_x; i <= max_x; i += step)
-        {
-            RectangleShape border(Vector2f(step, step));
-            border.setPosition(i, max_x);
-            border.setFillColor(Color::Black);
-            window.draw(border);
-        }
-        for (int i = min_y; i <= max_y; i += step)
-        {
-            RectangleShape border(Vector2f(step, step));
-            border.setPosition(min_y, i);
-            border.setFillColor(Color::Black);
-            window.draw(border);
-        }
-        for (int i = min_x; i <= max_x; i += step)
-        {
-            RectangleShape border(Vector2f(step, step));
-            border.setPosition(max_y, i);
-            border.setFillColor(Color::Black);
-            window.draw(border);
-        }
-
-        head.setPosition(snake[0].x, snake[0].y);
-        window.draw(head);
-        for (int i = 1; i < snake_len; i++)
-        {
-            window.draw(snake_item[i]);
-        }
-
-        if (cnt == m-1)
-        {
-            dir_changed = 0;
-
-            for (int i = snake_len - 1; i > 0; i--)
-            {
-                snake[i].x = snake[i - 1].x;
-                snake[i].y = snake[i - 1].y;
-            }
-
-            switch (direction)
-            {
-            case UP:
-            {
-                snake[0].y -= step;
-                break;
-            }
-            case RIGHT:
-            {
-                snake[0].x += step;
-                break;
-            }
-            case DOWN:
-            {
-                snake[0].y += step;
-                break;
-            }
-            case LEFT:
-            {
-                snake[0].x -= step;
-                break;
-            }
-            }
-        }
-
-        cnt = (cnt + 1) % m;
         window.display();
     }
 
@@ -670,4 +746,68 @@ void game_pvp()
 void game_pve()
 {
     cout << "NOT READY!\n";
+}
+
+void you_lose()
+{
+    RenderWindow window(sf::VideoMode(1400, 1400), "Snake");
+    window.setPosition(Vector2i(650, 100));
+
+    Texture backTexture;
+    backTexture.loadFromFile("\\\\Mac\\Home\\Desktop\\University\\3 SEM\\Programming languages\\Coursework\\Pics\\Back.png");
+    backTexture.setSmooth(true);
+
+    Sprite back_button(backTexture);
+    int back_pos[2] = { 600, 1250 };
+    back_button.setPosition(back_pos[0], back_pos[1]);
+    back_button.setScale(0.7f, 0.7f);
+
+    window.clear(sf::Color::White);
+
+    Font font;
+    assert(font.loadFromFile("\\\\Mac\\Home\\Desktop\\University\\3 SEM\\Programming languages\\Coursework\\Fonts\\Segoe Print\\segoeprint.ttf"));
+
+    Text text("", font, 60);
+    text.setColor(Color::Black);
+    text.setString(L"ВЫ ПРОИГРАЛИ!");
+    text.setPosition(200, 200);
+
+    bool work = 1;
+    while (work)
+    {
+        back_button.setColor(Color::Black);
+
+        if (IntRect(back_pos[0], back_pos[1], 300, 50).contains(Mouse::getPosition(window)))
+            back_button.setColor(Color::Blue);
+
+        Event event;
+        while (window.pollEvent(event))
+        {
+            if (event.type == Event::KeyReleased && event.key.code == Keyboard::Escape)
+            {
+                window.close();
+                work = 0;
+            }
+
+            if (event.type == event.MouseButtonReleased && event.mouseButton.button == Mouse::Left && \
+                IntRect(back_pos[0], back_pos[1], 300, 50).contains(Mouse::getPosition(window)))
+            {
+                window.close();
+                work = 0;
+            }
+
+            if (event.type == sf::Event::Closed)
+            {
+                window.close();
+                work = 0;
+            }
+        }
+
+        window.draw(text);
+        window.draw(back_button);
+
+        window.display();
+    }
+
+    return;
 }
