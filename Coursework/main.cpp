@@ -14,6 +14,14 @@ FILE* file;
 
 struct list_node* rec = NULL;
 
+struct dot
+{
+    int x;
+    int y;
+};
+
+enum directions {UP, RIGHT, DOWN, LEFT};
+
 void main_menu();
 void about();
 void faq();
@@ -464,22 +472,71 @@ Cтрелки вверх / вниз / влево / вправо.\n-Перемещение для 2 игрока:\n Kлавиши W /
 
 void game()
 {
-    int x = 10, y = 10, step = 30;
-    int max_x = 1400 - step - x, max_y = 1400 - step - y;
+    int min_x = 10, min_y = 10, step = 30;
+    int max_x = 1400 - step - min_x, max_y = 1400 - step - min_y;
     score1 = 0;
 
     RenderWindow window(sf::VideoMode(1400, 1400), "Snake");
     window.setPosition(Vector2i(650, 100));
-    window.clear(Color::White);
 
-    vector <int> snake_x(3, 0);
-    vector <int> snale_y(3, 0);
+    Texture headUPTexture;
+    headUPTexture.loadFromFile("\\\\Mac\\Home\\Desktop\\University\\3 SEM\\Programming languages\\Coursework\\Pics\\Green_head_UP.png");
+    headUPTexture.setSmooth(true);
+    Texture headRIGHTTexture;
+    headRIGHTTexture.loadFromFile("\\\\Mac\\Home\\Desktop\\University\\3 SEM\\Programming languages\\Coursework\\Pics\\Green_head_RIGHT.png");
+    headRIGHTTexture.setSmooth(true);
+    Texture headDOWNTexture;
+    headDOWNTexture.loadFromFile("\\\\Mac\\Home\\Desktop\\University\\3 SEM\\Programming languages\\Coursework\\Pics\\Green_head_DOWN.png");
+    headDOWNTexture.setSmooth(true);
+    Texture headLEFTTexture;
+    headLEFTTexture.loadFromFile("\\\\Mac\\Home\\Desktop\\University\\3 SEM\\Programming languages\\Coursework\\Pics\\Green_head_LEFT.png");
+    headLEFTTexture.setSmooth(true);
+
+    Sprite headUP(headUPTexture);
+    headUP.setScale(0.09, 0.09);
+    headUP.setOrigin(90, 180);
+    Sprite headRIGHT(headRIGHTTexture);
+    headRIGHT.setScale(0.09, 0.09);
+    headRIGHT.setOrigin(0, 100);
+    Sprite headLEFT(headLEFTTexture);
+    headLEFT.setScale(0.09, 0.09);
+    headLEFT.setOrigin(180, 70);
+    Sprite headDOWN(headDOWNTexture);
+    headDOWN.setScale(0.09, 0.09);
+    headDOWN.setOrigin(90, 0);
+
+
+
+    int snake_len = 3;
+    vector <dot> snake(snake_len);
    
+    snake[0].x = min_x + 3*step;
+    snake[1].x = min_x + 2*step;
+    snake[2].x = min_x + step;
+    snake[0].y = min_y + step;
+    snake[1].y = min_y + step;
+    snake[2].y = min_y + step;
+
+    CircleShape snake_item[3];
+
+    directions direction = RIGHT;
+
+    Sprite head = headRIGHT;
 
 
-    bool work = 1;
+    bool work = 1, dir_changed = 0;
+    int cnt = 0, m = 7;
     while (work)
-    {
+    {    
+
+        window.clear(Color::White);
+        for (int i = 1; i < snake_len; i++)
+        {
+            snake_item[i].setRadius(step / 2);
+            snake_item[i].setPosition(snake[i].x, snake[i].y);
+            snake_item[i].setFillColor(Color::Green);
+        }
+
         Event event;
         while (window.pollEvent(event))
         {
@@ -494,40 +551,112 @@ void game()
                 window.close();
                 work = 0;
             }
+
+            if (!dir_changed)
+            {
+                if (Keyboard::isKeyPressed(Keyboard::Right))
+                    if (direction != LEFT)
+                    {
+                        direction = RIGHT;
+                        head = headRIGHT;
+                        dir_changed = 1;
+                    }
+                if (Keyboard::isKeyPressed(Keyboard::Up))
+                    if (direction != DOWN)
+                    {
+                        direction = UP;
+                        head = headUP;
+                        dir_changed = 1;
+                    }
+                if (Keyboard::isKeyPressed(Keyboard::Left))
+                    if (direction != RIGHT)
+                    {
+                        direction = LEFT;
+                        head = headLEFT;
+                        dir_changed = 1;
+                    }
+                if (Keyboard::isKeyPressed(Keyboard::Down))
+                    if (direction != UP)
+                    {
+                        direction = DOWN;
+                        head = headDOWN;
+                        dir_changed = 1;
+                    }
+            }
         }
 
-        for (int i = x; i <= max_x; i += step)
+        for (int i = min_x; i <= max_x; i += step)
         {
-            RectangleShape rectangle(Vector2f(step, step));
-            rectangle.setPosition(i, x);
-            rectangle.setFillColor(Color::Black);
-            window.draw(rectangle);
+            RectangleShape border(Vector2f(step, step));
+            border.setPosition(i, min_x);
+            border.setFillColor(Color::Black);
+            window.draw(border);
         }
-
-        for (int i = x; i <= max_x; i += step)
+        for (int i = min_x; i <= max_x; i += step)
         {
-            RectangleShape rectangle(Vector2f(step, step));
-            rectangle.setPosition(i, max_x);
-            rectangle.setFillColor(Color::Black);
-            window.draw(rectangle);
+            RectangleShape border(Vector2f(step, step));
+            border.setPosition(i, max_x);
+            border.setFillColor(Color::Black);
+            window.draw(border);
         }
-
-        for (int i = y; i <= max_y; i += step)
+        for (int i = min_y; i <= max_y; i += step)
         {
-            RectangleShape rectangle(Vector2f(step, step));
-            rectangle.setPosition(y, i);
-            rectangle.setFillColor(Color::Black);
-            window.draw(rectangle);
+            RectangleShape border(Vector2f(step, step));
+            border.setPosition(min_y, i);
+            border.setFillColor(Color::Black);
+            window.draw(border);
         }
-
-        for (int i = x; i <= max_x; i += step)
+        for (int i = min_x; i <= max_x; i += step)
         {
-            RectangleShape rectangle(Vector2f(step, step));
-            rectangle.setPosition(max_y, i);
-            rectangle.setFillColor(Color::Black);
-            window.draw(rectangle);
+            RectangleShape border(Vector2f(step, step));
+            border.setPosition(max_y, i);
+            border.setFillColor(Color::Black);
+            window.draw(border);
         }
 
+        head.setPosition(snake[0].x, snake[0].y);
+        window.draw(head);
+        for (int i = 1; i < snake_len; i++)
+        {
+            window.draw(snake_item[i]);
+        }
+
+        if (cnt == m-1)
+        {
+            dir_changed = 0;
+
+            for (int i = snake_len - 1; i > 0; i--)
+            {
+                snake[i].x = snake[i - 1].x;
+                snake[i].y = snake[i - 1].y;
+            }
+
+            switch (direction)
+            {
+            case UP:
+            {
+                snake[0].y -= step;
+                break;
+            }
+            case RIGHT:
+            {
+                snake[0].x += step;
+                break;
+            }
+            case DOWN:
+            {
+                snake[0].y += step;
+                break;
+            }
+            case LEFT:
+            {
+                snake[0].x -= step;
+                break;
+            }
+            }
+        }
+
+        cnt = (cnt + 1) % m;
         window.display();
     }
 
