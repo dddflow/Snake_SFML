@@ -643,7 +643,10 @@ void game()
                 }
 
                 if (snake[0].x == food_pos.x && snake[0].y == food_pos.y)
+                {
                     eaten = true;
+                    score1 += 7;
+                }
 
                 if (snake[0].x == min_pos.x || snake[0].x == max_pos.x || snake[0].y == min_pos.y || snake[0].y == max_pos.y)
                 {
