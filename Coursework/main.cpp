@@ -6,6 +6,7 @@
 #include <iostream>
 #include <cassert>
 #include <vector>
+#include <windows.h>
 
 using namespace std;
 using namespace sf;
@@ -35,13 +36,15 @@ void game_pause();
 void records();
 
 const int max_snake = 3000;
-int score1;
+int score1, score2, m = 7;
+string player_name;
 
 int main()
 {
 	file = fopen("records.txt", "a+");
 
-    setlocale(LC_ALL, "Rus");
+    SetConsoleCP(1251);
+    SetConsoleOutputCP(1251);
 
 	while (!feof(file))
 	{
@@ -55,6 +58,9 @@ int main()
 		else
 			break;
 	}
+
+    cout << "Ïðåäñòàâüòåñü: ";
+    cin >> player_name;
 
 	fclose(file);
 
@@ -311,7 +317,128 @@ void game_menu()
 
 void difficulty()
 {
-    cout << "NOT READY!\n";
+    RenderWindow window(sf::VideoMode(1400, 1400), "Snake");
+    window.setPosition(Vector2i(650, 100));
+
+    Texture menuTexture[4];
+    menuTexture[0].loadFromFile("\\\\Mac\\Home\\Desktop\\University\\3 SEM\\Programming languages\\Coursework\\Pics\\Easy.png");
+    menuTexture[0].setSmooth(true);
+
+    menuTexture[1].loadFromFile("\\\\Mac\\Home\\Desktop\\University\\3 SEM\\Programming languages\\Coursework\\Pics\\Medium.png");
+    menuTexture[1].setSmooth(true);
+
+    menuTexture[2].loadFromFile("\\\\Mac\\Home\\Desktop\\University\\3 SEM\\Programming languages\\Coursework\\Pics\\Hard.png");
+    menuTexture[2].setSmooth(true);
+
+    menuTexture[3].loadFromFile("\\\\Mac\\Home\\Desktop\\University\\3 SEM\\Programming languages\\Coursework\\Pics\\Back.png");
+    menuTexture[3].setSmooth(true);
+
+    Sprite menu1(menuTexture[0]), \
+        menu2(menuTexture[1]), \
+        menu3(menuTexture[2]), \
+        menu4(menuTexture[3]);
+
+    int menu1_pos[2] = { 550, 420 };
+    menu1.setPosition(menu1_pos[0], menu1_pos[1]);
+    menu1.setScale(0.7f, 0.7f);
+
+    int menu2_pos[2] = { 550, 500 };
+    menu2.setPosition(menu2_pos[0], menu2_pos[1]);
+    menu2.setScale(0.7f, 0.7f);
+
+    int menu3_pos[2] = { 540, 600 };
+    menu3.setPosition(menu3_pos[0], menu3_pos[1]);
+    menu3.setScale(0.7f, 0.7f);
+
+    int menu4_pos[2] = { 580, 700 };
+    menu4.setPosition(menu4_pos[0], menu4_pos[1]);
+    menu4.setScale(0.7f, 0.7f);
+
+    bool work = 1;
+    while (work)
+    {
+        window.clear(sf::Color::White);
+
+        while (window.isOpen())
+        {
+            menu1.setColor(Color::Black);
+            menu2.setColor(Color::Black);
+            menu3.setColor(Color::Black);
+            menu4.setColor(Color::Black);
+
+            switch (m)
+            {
+            case 2:
+            {
+                menu3.setColor(Color::Blue);
+                break;
+            }
+            case 4:
+            {
+                menu2.setColor(Color::Blue);
+                break;
+            }
+            case 7:
+            {
+                menu1.setColor(Color::Blue);
+                break;
+            }
+            }
+
+            if (IntRect(menu1_pos[0], menu1_pos[1], 280, 50).contains(Mouse::getPosition(window)))
+                menu1.setColor(Color::Blue);
+            if (IntRect(menu2_pos[0], menu2_pos[1], 330, 50).contains(Mouse::getPosition(window)))
+                menu2.setColor(Color::Blue);
+            if (IntRect(menu3_pos[0], menu3_pos[1], 670, 50).contains(Mouse::getPosition(window)))
+                menu3.setColor(Color::Blue);
+            if (IntRect(menu4_pos[0], menu4_pos[1], 220, 50).contains(Mouse::getPosition(window)))
+                menu4.setColor(Color::Blue);
+
+            Event event;
+            while (window.pollEvent(event))
+            {
+                if (event.type == event.MouseButtonReleased && event.mouseButton.button == Mouse::Left && \
+                    IntRect(menu1_pos[0], menu1_pos[1], 280, 50).contains(Mouse::getPosition(window)))
+                    m = 7;
+
+                if (event.type == event.MouseButtonReleased && event.mouseButton.button == Mouse::Left && \
+                    IntRect(menu2_pos[0], menu2_pos[1], 330, 50).contains(Mouse::getPosition(window)))
+                    m = 4;
+
+                if (event.type == event.MouseButtonReleased && event.mouseButton.button == Mouse::Left && \
+                    IntRect(menu3_pos[0], menu3_pos[1], 670, 50).contains(Mouse::getPosition(window)))
+                    m = 2;
+
+                if (event.type == event.MouseButtonReleased && event.mouseButton.button == Mouse::Left && \
+                    IntRect(menu4_pos[0], menu4_pos[1], 220, 50).contains(Mouse::getPosition(window)))
+                {
+                    window.close();
+                    work = 0;
+                }
+
+                if (event.type == Event::KeyReleased && event.key.code == Keyboard::Escape)
+                {
+                    window.close();
+                    work = 0;
+                }
+
+                if (event.type == sf::Event::Closed)
+                {
+                    window.close();
+                    work = 0;
+                }
+            }
+
+            window.draw(menu1);
+            window.draw(menu2);
+            window.draw(menu3);
+            window.draw(menu4);
+
+            window.display();
+        }
+    }
+
+    return;
 }
 
 void records()
@@ -548,7 +675,7 @@ void game()
     bool end_game = 0, pause_game = 0;
 
     bool first = 1, work = 1, dir_changed = 0;
-    int cnt = 0, m = 7;
+    int cnt = 0;
     while (work)
     { 
         if (!end_game && !pause_game)
@@ -763,17 +890,8 @@ void game_pve()
 
 void you_lose()
 {
-    RenderWindow window(sf::VideoMode(1400, 1400), "Snake");
-    window.setPosition(Vector2i(650, 100));
-
-    Texture backTexture;
-    backTexture.loadFromFile("\\\\Mac\\Home\\Desktop\\University\\3 SEM\\Programming languages\\Coursework\\Pics\\Back.png");
-    backTexture.setSmooth(true);
-
-    Sprite back_button(backTexture);
-    int back_pos[2] = { 600, 1250 };
-    back_button.setPosition(back_pos[0], back_pos[1]);
-    back_button.setScale(0.7f, 0.7f);
+    RenderWindow window(sf::VideoMode(800, 400), "Snake");
+    window.setPosition(Vector2i(950, 400));
 
     window.clear(sf::Color::White);
 
@@ -782,28 +900,17 @@ void you_lose()
 
     Text text("", font, 60);
     text.setColor(Color::Black);
-    text.setString(L"ÂÛ ÏÐÎÈÃÐÀËÈ!");
-    text.setPosition(200, 200);
+    text.setString(L"ÂÛ ÏÐÎÈÃÐÀËÈ!\n");
+    text.setPosition(400, 400);
+    text.setScale(1, 2);
 
     bool work = 1;
     while (work)
     {
-        back_button.setColor(Color::Black);
-
-        if (IntRect(back_pos[0], back_pos[1], 300, 50).contains(Mouse::getPosition(window)))
-            back_button.setColor(Color::Blue);
-
         Event event;
         while (window.pollEvent(event))
         {
             if (event.type == Event::KeyReleased && event.key.code == Keyboard::Escape)
-            {
-                window.close();
-                work = 0;
-            }
-
-            if (event.type == event.MouseButtonReleased && event.mouseButton.button == Mouse::Left && \
-                IntRect(back_pos[0], back_pos[1], 300, 50).contains(Mouse::getPosition(window)))
             {
                 window.close();
                 work = 0;
@@ -817,8 +924,6 @@ void you_lose()
         }
 
         window.draw(text);
-        window.draw(back_button);
-
         window.display();
     }
 
