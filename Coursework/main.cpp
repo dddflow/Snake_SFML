@@ -519,6 +519,14 @@ void game()
     pauseButton.setScale(0.05, 0.05);
     pauseButton.setPosition(max_pos.x - 2*step, min_pos.y + 1.5*step);
 
+    Font font;
+    assert(font.loadFromFile("\\\\Mac\\Home\\Desktop\\University\\3 SEM\\Programming languages\\Coursework\\Fonts\\Segoe Print\\segoeprint.ttf"));
+
+    Text score1_value("", font, 60);
+    score1_value.setPosition(min_pos.x + 1.5 * step, min_pos.y + step);
+    score1_value.setColor(Color(0, 0, 0, 100));
+
+
     int snake_len = 3;
     vector <dot> snake(snake_len);
    
@@ -669,8 +677,10 @@ void game()
         pauseButton.setColor(Color(0, 0, 0, 100));
         if (IntRect(max_pos.x - 2 * step, min_pos.y + 1.5 * step, 50, 50).contains(Mouse::getPosition(window)))
             pauseButton.setColor(Color::Blue);
-
         window.draw(pauseButton);
+
+        score1_value.setString(to_string(score1));
+        window.draw(score1_value);
 
         Event event;
         while (window.pollEvent(event))
