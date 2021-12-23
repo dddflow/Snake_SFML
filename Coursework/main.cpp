@@ -2,18 +2,17 @@
 #define SFML_NO_DEPRECATED_WARNINGS
 
 #include <SFML/Graphics.hpp>
-#include "list.h"
 #include <iostream>
 #include <cassert>
 #include <vector>
 #include <windows.h>
+#include <set>
+#include <fstream>
+#include <codecvt>
+
 
 using namespace std;
 using namespace sf;
-
-FILE* file;
-
-struct list_node* rec = NULL;
 
 struct dot
 {
@@ -27,42 +26,34 @@ void main_menu();
 void about();
 void faq();
 void game();
-void you_lose();
+void you_lose(int c);
 void difficulty();
 void game_menu();
 void game_pvp();
 void game_pve();
-void game_pause();
 void records();
 
 const int max_snake = 3000;
 int score1, score2, m = 7;
 string player_name;
 
+set <pair <int, string>, greater < pair <int, string >>> rec;
+
+
 int main()
 {
-	file = fopen("records.txt", "a+");
-
     SetConsoleCP(1251);
     SetConsoleOutputCP(1251);
 
-	while (!feof(file))
-	{
-		int sc;
-		char na[256] = { 0 };
-		fscanf(file, "%d", &sc);
-		if (!feof(file))
-			fgets(na, 256, file);
-		if (na[0] != 0)
-			insert(&rec, na, sc);
-		else
-			break;
-	}
+    ifstream fin("records.txt");
+
+    string name = "";
+    int sc = 0;
+    while (fin >> sc >> name)
+        rec.insert({sc, name});
 
     cout << "Ïðåäñòàâüòåñü: ";
     cin >> player_name;
-
-	fclose(file);
 
 	main_menu();
 
@@ -443,7 +434,97 @@ void difficulty()
 
 void records()
 {
-    cout << "NOT READY!\n";
+    RenderWindow window(sf::VideoMode(1400, 1400), "Snake");
+    window.setPosition(Vector2i(650, 100));
+
+    Texture headerTexture;
+    headerTexture.loadFromFile("\\\\Mac\\Home\\Desktop\\University\\3 SEM\\Programming languages\\Coursework\\Pics\\Records.png");
+    headerTexture.setSmooth(true);
+
+    Sprite header(headerTexture);
+    int header_pos[2] = { 400, 50 };
+    header.setPosition(header_pos[0], header_pos[1]);
+    header.setScale(0.7f, 0.7f);
+    header.setColor(Color::Black);
+
+    Texture backTexture;
+    backTexture.loadFromFile("\\\\Mac\\Home\\Desktop\\University\\3 SEM\\Programming languages\\Coursework\\Pics\\Back.png");
+    backTexture.setSmooth(true);
+
+    Sprite back_button(backTexture);
+    int back_pos[2] = { 600, 1200 };
+    back_button.setPosition(back_pos[0], back_pos[1]);
+    back_button.setScale(0.7f, 0.7f);
+
+    window.clear(Color::White);
+
+    Font font;
+    assert(font.loadFromFile("\\\\Mac\\Home\\Desktop\\University\\3 SEM\\Programming languages\\Coursework\\Fonts\\Segoe Print\\segoeprint.ttf"));
+
+    Text text[2][10];
+    for (int i = 0; i < 10; i++)
+    {
+        text[0][i].setFont(font);
+        text[1][i].setFont(font);
+        text[0][i].setCharacterSize(40);
+        text[1][i].setCharacterSize(40);
+        text[0][i].setPosition(200, 50 + 100 * (i + 1));
+        text[1][i].setPosition(1000, 50 + 100 * (i + 1));
+        text[0][i].setColor(Color::Black);
+        text[1][i].setColor(Color::Black);
+    }
+
+    int cnt = 0;
+    for (auto p : rec)
+    {
+        text[0][cnt].setString(p.second);
+        text[1][cnt].setString(to_string(p.first));
+        cnt++;
+        if (cnt == 10) break;
+    }
+
+    bool work = 1;
+    while (work)
+    {
+        back_button.setColor(Color::Black);
+
+        if (IntRect(back_pos[0], back_pos[1], 300, 50).contains(Mouse::getPosition(window)))
+            back_button.setColor(Color::Blue);
+
+        Event event;
+        while (window.pollEvent(event))
+        {
+            if (event.type == Event::KeyReleased && event.key.code == Keyboard::Escape)
+            {
+                window.close();
+                work = 0;
+            }
+
+            if (event.type == event.MouseButtonReleased && event.mouseButton.button == Mouse::Left && \
+                IntRect(back_pos[0], back_pos[1], 300, 50).contains(Mouse::getPosition(window)))
+            {
+                window.close();
+                work = 0;
+            }
+
+            if (event.type == sf::Event::Closed)
+            {
+                window.close();
+                work = 0;
+            }
+        }
+        window.draw(header);
+        window.draw(back_button);
+        for (int i = 0; i < 10; i++)
+        {
+            window.draw(text[0][i]);
+            window.draw(text[1][i]);
+        }
+
+        window.display();
+    }
+
+    return;
 }
 
 void about()
@@ -785,14 +866,14 @@ void game()
 
                 if (snake[0].x == min_pos.x || snake[0].x == max_pos.x || snake[0].y == min_pos.y || snake[0].y == max_pos.y)
                 {
-                    you_lose();
+                    you_lose(1);
                     end_game = 1;
                 }
 
                 for (int i = 1; i < snake_len; i++)
                     if (snake[0].x == snake[i].x && snake[0].y == snake[i].y)
                     {
-                        you_lose();
+                        you_lose(1);
                         end_game = 1;
                     }
             }
@@ -888,7 +969,7 @@ void game_pve()
     cout << "NOT READY!\n";
 }
 
-void you_lose()
+void you_lose(int c)
 {
     RenderWindow window(sf::VideoMode(800, 400), "Snake");
     window.setPosition(Vector2i(950, 400));
@@ -900,9 +981,16 @@ void you_lose()
 
     Text text("", font, 60);
     text.setColor(Color::Black);
-    text.setString(L"ÂÛ ÏÐÎÈÃÐÀËÈ!\n");
     text.setPosition(400, 400);
     text.setScale(1, 2);
+
+    if (c == 1)
+    {
+        text.setString(L"ÂÛ ÏÐÎÈÃÐÀËÈ!\n");
+        rec.insert({ score1, player_name });
+        ofstream fout("records.txt", ios::app);
+        fout << score1 << ' ' << player_name << '\n';
+    }
 
     bool work = 1;
     while (work)
