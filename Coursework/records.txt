@@ -1,5 +1,13 @@
 0 z
-28 Δενθρ
 0 123
 7 ya
 7 rrrrrrrrr
+14 denis
+14 egor
+0 2
+0 2
+0 2
+7 2
+14 2
+42 player
+7 player

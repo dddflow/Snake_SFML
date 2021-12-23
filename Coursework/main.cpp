@@ -37,8 +37,7 @@ const int max_snake = 3000;
 int score1, score2, m = 7;
 string player_name;
 
-set <pair <int, string>, greater < pair <int, string >>> rec;
-
+multiset <pair <int, string>, greater < pair <int, string >>> rec;
 
 int main()
 {
@@ -52,7 +51,7 @@ int main()
     while (fin >> sc >> name)
         rec.insert({sc, name});
 
-    cout << "Представьтесь: ";
+    cout << "Представьтесь на английском :)\n";
     cin >> player_name;
 
 	main_menu();
@@ -66,22 +65,22 @@ void main_menu()
     window.setPosition(Vector2i(650,100));
 
     Texture menuTexture[6];
-    menuTexture[0].loadFromFile("\\\\Mac\\Home\\Desktop\\University\\3 SEM\\Programming languages\\Coursework\\Pics\\NewGame.png");
+    menuTexture[0].loadFromFile("Pics\\NewGame.png");
     menuTexture[0].setSmooth(true);
 
-    menuTexture[1].loadFromFile("\\\\Mac\\Home\\Desktop\\University\\3 SEM\\Programming languages\\Coursework\\Pics\\Difficulty.png");
+    menuTexture[1].loadFromFile("Pics\\Difficulty.png");
     menuTexture[1].setSmooth(true);
 
-    menuTexture[2].loadFromFile("\\\\Mac\\Home\\Desktop\\University\\3 SEM\\Programming languages\\Coursework\\Pics\\Records.png");
+    menuTexture[2].loadFromFile("Pics\\Records.png");
     menuTexture[2].setSmooth(true);
 
-    menuTexture[3].loadFromFile("\\\\Mac\\Home\\Desktop\\University\\3 SEM\\Programming languages\\Coursework\\Pics\\About.png");
+    menuTexture[3].loadFromFile("Pics\\About.png");
     menuTexture[3].setSmooth(true);
 
-    menuTexture[4].loadFromFile("\\\\Mac\\Home\\Desktop\\University\\3 SEM\\Programming languages\\Coursework\\Pics\\FAQ.png");
+    menuTexture[4].loadFromFile("Pics\\FAQ.png");
     menuTexture[4].setSmooth(true);
 
-    menuTexture[5].loadFromFile("\\\\Mac\\Home\\Desktop\\University\\3 SEM\\Programming languages\\Coursework\\Pics\\Exit.png");
+    menuTexture[5].loadFromFile("Pics\\Exit.png");
     menuTexture[5].setSmooth(true);
 
     Sprite menu1(menuTexture[0]), \
@@ -205,16 +204,16 @@ void game_menu()
     window.setPosition(Vector2i(650, 100));
 
     Texture menuTexture[4];
-    menuTexture[0].loadFromFile("\\\\Mac\\Home\\Desktop\\University\\3 SEM\\Programming languages\\Coursework\\Pics\\1player.png");
+    menuTexture[0].loadFromFile("Pics\\1player.png");
     menuTexture[0].setSmooth(true);
 
-    menuTexture[1].loadFromFile("\\\\Mac\\Home\\Desktop\\University\\3 SEM\\Programming languages\\Coursework\\Pics\\PVP.png");
+    menuTexture[1].loadFromFile("Pics\\PVP.png");
     menuTexture[1].setSmooth(true);
 
-    menuTexture[2].loadFromFile("\\\\Mac\\Home\\Desktop\\University\\3 SEM\\Programming languages\\Coursework\\Pics\\PVE.png");
+    menuTexture[2].loadFromFile("Pics\\PVE.png");
     menuTexture[2].setSmooth(true);
 
-    menuTexture[3].loadFromFile("\\\\Mac\\Home\\Desktop\\University\\3 SEM\\Programming languages\\Coursework\\Pics\\Back.png");
+    menuTexture[3].loadFromFile("Pics\\Back.png");
     menuTexture[3].setSmooth(true);
 
     Sprite menu1(menuTexture[0]), \
@@ -312,16 +311,16 @@ void difficulty()
     window.setPosition(Vector2i(650, 100));
 
     Texture menuTexture[4];
-    menuTexture[0].loadFromFile("\\\\Mac\\Home\\Desktop\\University\\3 SEM\\Programming languages\\Coursework\\Pics\\Easy.png");
+    menuTexture[0].loadFromFile("Pics\\Easy.png");
     menuTexture[0].setSmooth(true);
 
-    menuTexture[1].loadFromFile("\\\\Mac\\Home\\Desktop\\University\\3 SEM\\Programming languages\\Coursework\\Pics\\Medium.png");
+    menuTexture[1].loadFromFile("Pics\\Medium.png");
     menuTexture[1].setSmooth(true);
 
-    menuTexture[2].loadFromFile("\\\\Mac\\Home\\Desktop\\University\\3 SEM\\Programming languages\\Coursework\\Pics\\Hard.png");
+    menuTexture[2].loadFromFile("Pics\\Hard.png");
     menuTexture[2].setSmooth(true);
 
-    menuTexture[3].loadFromFile("\\\\Mac\\Home\\Desktop\\University\\3 SEM\\Programming languages\\Coursework\\Pics\\Back.png");
+    menuTexture[3].loadFromFile("Pics\\Back.png");
     menuTexture[3].setSmooth(true);
 
     Sprite menu1(menuTexture[0]), \
@@ -438,7 +437,7 @@ void records()
     window.setPosition(Vector2i(650, 100));
 
     Texture headerTexture;
-    headerTexture.loadFromFile("\\\\Mac\\Home\\Desktop\\University\\3 SEM\\Programming languages\\Coursework\\Pics\\Records.png");
+    headerTexture.loadFromFile("Pics\\Records.png");
     headerTexture.setSmooth(true);
 
     Sprite header(headerTexture);
@@ -448,7 +447,7 @@ void records()
     header.setColor(Color::Black);
 
     Texture backTexture;
-    backTexture.loadFromFile("\\\\Mac\\Home\\Desktop\\University\\3 SEM\\Programming languages\\Coursework\\Pics\\Back.png");
+    backTexture.loadFromFile("Pics\\Back.png");
     backTexture.setSmooth(true);
 
     Sprite back_button(backTexture);
@@ -459,7 +458,7 @@ void records()
     window.clear(Color::White);
 
     Font font;
-    assert(font.loadFromFile("\\\\Mac\\Home\\Desktop\\University\\3 SEM\\Programming languages\\Coursework\\Fonts\\Segoe Print\\segoeprint.ttf"));
+    assert(font.loadFromFile("Fonts\\Segoe Print\\segoeprint.ttf"));
 
     Text text[2][10];
     for (int i = 0; i < 10; i++)
@@ -533,7 +532,7 @@ void about()
     window.setPosition(Vector2i(650, 100));
     
     Texture headerTexture;
-    headerTexture.loadFromFile("\\\\Mac\\Home\\Desktop\\University\\3 SEM\\Programming languages\\Coursework\\Pics\\About.png");
+    headerTexture.loadFromFile("Pics\\About.png");
     headerTexture.setSmooth(true);
 
     Sprite header(headerTexture);
@@ -543,7 +542,7 @@ void about()
     header.setColor(Color::Black);
 
     Texture backTexture;
-    backTexture.loadFromFile("\\\\Mac\\Home\\Desktop\\University\\3 SEM\\Programming languages\\Coursework\\Pics\\Back.png");
+    backTexture.loadFromFile("Pics\\Back.png");
     backTexture.setSmooth(true);
 
     Sprite back_button(backTexture);
@@ -554,7 +553,7 @@ void about()
     window.clear(Color::White);
 
     Font font;
-    assert(font.loadFromFile("\\\\Mac\\Home\\Desktop\\University\\3 SEM\\Programming languages\\Coursework\\Fonts\\Segoe Print\\segoeprint.ttf"));
+    assert(font.loadFromFile("Fonts\\Segoe Print\\segoeprint.ttf"));
 
     Text text("", font, 40);
     text.setColor(Color::Black);
@@ -607,7 +606,7 @@ void faq()
     window.setPosition(Vector2i(650, 100));
 
     Texture headerTexture;
-    headerTexture.loadFromFile("\\\\Mac\\Home\\Desktop\\University\\3 SEM\\Programming languages\\Coursework\\Pics\\About.png");
+    headerTexture.loadFromFile("Pics\\About.png");
     headerTexture.setSmooth(true);
 
     Sprite header(headerTexture);
@@ -617,7 +616,7 @@ void faq()
     header.setColor(Color::Black);
 
     Texture backTexture;
-    backTexture.loadFromFile("\\\\Mac\\Home\\Desktop\\University\\3 SEM\\Programming languages\\Coursework\\Pics\\Back.png");
+    backTexture.loadFromFile("Pics\\Back.png");
     backTexture.setSmooth(true);
 
     Sprite back_button(backTexture);
@@ -628,7 +627,7 @@ void faq()
     window.clear(sf::Color::White);
 
     Font font;
-    assert(font.loadFromFile("\\\\Mac\\Home\\Desktop\\University\\3 SEM\\Programming languages\\Coursework\\Fonts\\Segoe Print\\segoeprint.ttf"));
+    assert(font.loadFromFile("Fonts\\Segoe Print\\segoeprint.ttf"));
 
     Text text("", font, 40);
     text.setColor(Color::Black);
@@ -691,16 +690,16 @@ void game()
     window.setPosition(Vector2i(650, 100));
 
     Texture headUPTexture;
-    headUPTexture.loadFromFile("\\\\Mac\\Home\\Desktop\\University\\3 SEM\\Programming languages\\Coursework\\Pics\\Green_head_UP.png");
+    headUPTexture.loadFromFile("Pics\\Green_head_UP.png");
     headUPTexture.setSmooth(true);
     Texture headRIGHTTexture;
-    headRIGHTTexture.loadFromFile("\\\\Mac\\Home\\Desktop\\University\\3 SEM\\Programming languages\\Coursework\\Pics\\Green_head_RIGHT.png");
+    headRIGHTTexture.loadFromFile("Pics\\Green_head_RIGHT.png");
     headRIGHTTexture.setSmooth(true);
     Texture headDOWNTexture;
-    headDOWNTexture.loadFromFile("\\\\Mac\\Home\\Desktop\\University\\3 SEM\\Programming languages\\Coursework\\Pics\\Green_head_DOWN.png");
+    headDOWNTexture.loadFromFile("Pics\\Green_head_DOWN.png");
     headDOWNTexture.setSmooth(true);
     Texture headLEFTTexture;
-    headLEFTTexture.loadFromFile("\\\\Mac\\Home\\Desktop\\University\\3 SEM\\Programming languages\\Coursework\\Pics\\Green_head_LEFT.png");
+    headLEFTTexture.loadFromFile("Pics\\Green_head_LEFT.png");
     headLEFTTexture.setSmooth(true);
 
     Sprite headUP(headUPTexture);
@@ -717,18 +716,18 @@ void game()
     headDOWN.setOrigin(90, 0);
 
     Texture foodTexture;
-    foodTexture.loadFromFile("\\\\Mac\\Home\\Desktop\\University\\3 SEM\\Programming languages\\Coursework\\Pics\\Food.png");
+    foodTexture.loadFromFile("Pics\\Food.png");
     Sprite food(foodTexture);
     food.setScale(0.03, 0.03);
 
     Texture pauseTexture;
-    pauseTexture.loadFromFile("\\\\Mac\\Home\\Desktop\\University\\3 SEM\\Programming languages\\Coursework\\Pics\\Pause.png");
+    pauseTexture.loadFromFile("Pics\\Pause.png");
     Sprite pauseButton(pauseTexture);
     pauseButton.setScale(0.05, 0.05);
     pauseButton.setPosition(max_pos.x - 2*step, min_pos.y + 1.5*step);
 
     Font font;
-    assert(font.loadFromFile("\\\\Mac\\Home\\Desktop\\University\\3 SEM\\Programming languages\\Coursework\\Fonts\\Segoe Print\\segoeprint.ttf"));
+    assert(font.loadFromFile("Fonts\\Segoe Print\\segoeprint.ttf"));
 
     Text score1_value("", font, 60);
     score1_value.setPosition(min_pos.x + 1.5 * step, min_pos.y + step);
@@ -977,7 +976,7 @@ void you_lose(int c)
     window.clear(sf::Color::White);
 
     Font font;
-    assert(font.loadFromFile("\\\\Mac\\Home\\Desktop\\University\\3 SEM\\Programming languages\\Coursework\\Fonts\\Segoe Print\\segoeprint.ttf"));
+    assert(font.loadFromFile("Fonts\\Segoe Print\\segoeprint.ttf"));
 
     Text text("", font, 60);
     text.setColor(Color::Black);
