@@ -921,34 +921,30 @@ void game()
 
             if (!dir_changed)
             {
-                if (Keyboard::isKeyPressed(Keyboard::Right))
-                    if (direction != LEFT)
-                    {
-                        direction = RIGHT;
-                        head = headRIGHT;
-                        dir_changed = 1;
-                    }
-                if (Keyboard::isKeyPressed(Keyboard::Up))
-                    if (direction != DOWN)
-                    {
-                        direction = UP;
-                        head = headUP;
-                        dir_changed = 1;
-                    }
-                if (Keyboard::isKeyPressed(Keyboard::Left))
-                    if (direction != RIGHT)
-                    {
-                        direction = LEFT;
-                        head = headLEFT;
-                        dir_changed = 1;
-                    }
-                if (Keyboard::isKeyPressed(Keyboard::Down))
-                    if (direction != UP)
-                    {
-                        direction = DOWN;
-                        head = headDOWN;
-                        dir_changed = 1;
-                    }
+                if (Keyboard::isKeyPressed(Keyboard::Right) && direction != LEFT)
+                {
+                    direction = RIGHT;
+                    head = headRIGHT;
+                    dir_changed = 1;
+                }
+                else if (Keyboard::isKeyPressed(Keyboard::Up) && direction != DOWN)
+                {
+                    direction = UP;
+                    head = headUP;
+                    dir_changed = 1;
+                }
+                else if (Keyboard::isKeyPressed(Keyboard::Left) && direction != RIGHT)
+                {
+                    direction = LEFT;
+                    head = headLEFT;
+                    dir_changed = 1;
+                }
+                else if (Keyboard::isKeyPressed(Keyboard::Down) && direction != UP)
+                {
+                    direction = DOWN;
+                    head = headDOWN;
+                    dir_changed = 1;
+                }
             }
         }
 

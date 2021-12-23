@@ -11,3 +11,6 @@
 14 2
 42 player
 7 player
+14 okay
+0 okay
+28 2
