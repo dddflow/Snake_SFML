@@ -876,14 +876,14 @@ void game()
 
                 if (snake[0].x == min_pos.x || snake[0].x == max_pos.x || snake[0].y == min_pos.y || snake[0].y == max_pos.y)
                 {
-                    you_lose(1);
+                    you_lose(0);
                     end_game = 1;
                 }
 
                 for (int i = 1; i < snake_len; i++)
                     if (snake[0].x == snake[i].x && snake[0].y == snake[i].y)
                     {
-                        you_lose(1);
+                        you_lose(0);
                         end_game = 1;
                     }
             }
@@ -1145,6 +1145,7 @@ void game_pvp()
                     for (int i = 0; i < snake2_len; i++)
                         if (snake2[i].x == food_pos.x && snake2[i].y == food_pos.y) find = true;
                 }
+                if (!first2)
                 {
                     snake2.push_back(tail2);
                     snake2_item.push_back(snake2_item[snake2_len - 1]);
@@ -1279,28 +1280,46 @@ void game_pvp()
                     score2 += 7;
                 }
 
+                bool lose1 = false, lose2 = false;
+
                 if (snake1[0].x == min_pos.x || snake1[0].x == max_pos.x || snake1[0].y == min_pos.y || snake1[0].y == max_pos.y)
                 {
-                    you_lose(1);
+                    lose1 = true;
                     end_game = 1;
                 }
                 if (snake2[0].x == min_pos.x || snake2[0].x == max_pos.x || snake2[0].y == min_pos.y || snake2[0].y == max_pos.y)
                 {
-                    you_lose(1);
+                    lose2 = true;
                     end_game = 1;
                 }
                 for (int i = 1; i < snake1_len; i++)
                     if (snake1[0].x == snake1[i].x && snake1[0].y == snake1[i].y)
                     {
-                        you_lose(1);
+                        lose1 = true;
                         end_game = 1;
                     }
                 for (int i = 1; i < snake2_len; i++)
                     if (snake2[0].x == snake2[i].x && snake2[0].y == snake2[i].y)
                     {
-                        you_lose(1);
+                        lose2 = true;
                         end_game = 1;
                     }
+                for (int i = 0; i < snake1_len; i++)
+                    if (snake2[0].x == snake1[i].x && snake2[0].y == snake1[i].y)
+                    {
+                        lose2 = true;
+                        end_game = 1;
+                    }
+                for (int i = 0; i < snake2_len; i++)
+                    if (snake1[0].x == snake2[i].x && snake1[0].y == snake2[i].y)
+                    {
+                        lose1 = true;
+                        end_game = 1;
+                    }
+
+                if (lose1 && lose2) you_lose(3);
+                else if (lose1) you_lose(1);
+                else if (lose2) you_lose(2);
             }
             cnt = (cnt + 1) % m;
         }
@@ -1429,14 +1448,41 @@ void you_lose(int c)
     text.setPosition(400, 400);
     text.setScale(1, 2);
 
-    if (c == 1)
+    if (c == 0)
     {
         text.setString(L"ÂÛ ÏÐÎÈÃÐÀËÈ!\n");
-        rec.insert({ score1, player_name });
+        rec.insert({ score1, player_name + "(green)"});
         ofstream fout("records.txt", ios::app);
-        fout << score1 << ' ' << player_name << '\n';
+        fout << score1 << ' ' << player_name + "(green)" << '\n';
     }
-
+    if (c == 1)
+    {
+        text.setString(L"2 ÈÃÐÎÊ ÏÎÁÅÄÈË\n");
+        rec.insert({ score1, player_name + "(green)"});
+        rec.insert({ score2, player_name + "(red)" });
+        ofstream fout("records.txt", ios::app);
+        fout << score1 << ' ' << player_name + "(green)" << '\n';
+        fout << score2 << ' ' << player_name + "(red)" << '\n';
+    }
+    if (c == 2)
+    {
+        text.setString(L"1 ÈÃÐÎÊ ÏÎÁÅÄÈË!\n");
+        rec.insert({ score1, player_name + "(green)" });
+        rec.insert({ score2, player_name + "(red)" });
+        ofstream fout("records.txt", ios::app);
+        fout << score1 << ' ' << player_name + "(green)" << '\n';
+        fout << score2 << ' ' << player_name + "(red)" << '\n';
+    }
+    if (c == 3)
+    {
+        text.setString(L"ÎÁÀ ÏÐÎÈÃÐÀËÈ!\n");
+        rec.insert({ score1, player_name + "(green)" });
+        rec.insert({ score2, player_name + "(red)" });
+        ofstream fout("records.txt", ios::app);
+        fout << score1 << ' ' << player_name + "(green)" << '\n';
+        fout << score2 << ' ' << player_name + "(red)" << '\n';
+    }
+    
     bool work = 1;
     while (work)
     {
