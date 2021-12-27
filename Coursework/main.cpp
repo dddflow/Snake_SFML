@@ -32,7 +32,6 @@ void game_pvp();
 void game_pve();
 void records();
 
-const int max_snake = 3000;
 int score1, score2, m = 7;
 string player_name;
 
@@ -1476,11 +1475,11 @@ void you_lose(int c)
     if (c == 3)
     {
         text.setString(L"Œ¡¿ œ–Œ»√–¿À»!\n");
-        rec.insert({ score1, player_name + "(green)" });
-        rec.insert({ score2, player_name + "(red)" });
+        rec.insert({ score1, player_name + " (green)" });
+        rec.insert({ score2, player_name + " (red)" });
         ofstream fout("records.txt", ios::app);
-        fout << score1 << ' ' << player_name + "(green)" << '\n';
-        fout << score2 << ' ' << player_name + "(red)" << '\n';
+        fout << score1 << ' ' << player_name + " (green)" << '\n';
+        fout << score2 << ' ' << player_name + " (red)" << '\n';
     }
     
     bool work = 1;
