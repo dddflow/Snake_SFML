@@ -21,11 +21,13 @@ struct dot
 
 enum directions {UP, RIGHT, DOWN, LEFT};
 
+enum fails {LOSE, WIN, DRAW, WIN1, WIN2, DRAW1};
+
 void main_menu();
 void about();
 void faq();
 void game();
-void you_lose(int c);
+void you_lose(fails f);
 void difficulty();
 void game_menu();
 void game_pvp();
@@ -875,14 +877,14 @@ void game()
 
                 if (snake[0].x == min_pos.x || snake[0].x == max_pos.x || snake[0].y == min_pos.y || snake[0].y == max_pos.y)
                 {
-                    you_lose(0);
+                    you_lose(LOSE);
                     end_game = 1;
                 }
 
                 for (int i = 1; i < snake_len; i++)
                     if (snake[0].x == snake[i].x && snake[0].y == snake[i].y)
                     {
-                        you_lose(0);
+                        you_lose(LOSE);
                         end_game = 1;
                     }
             }
@@ -1316,9 +1318,9 @@ void game_pvp()
                         end_game = 1;
                     }
 
-                if (lose1 && lose2) you_lose(3);
-                else if (lose1) you_lose(1);
-                else if (lose2) you_lose(2);
+                if (lose1 && lose2) you_lose(DRAW);
+                else if (lose1) you_lose(WIN1);
+                else if (lose2) you_lose(WIN2);
             }
             cnt = (cnt + 1) % m;
         }
@@ -1779,9 +1781,9 @@ void game_pve()
                         end_game = 1;
                     }
 
-                if (lose1 && lose2) you_lose(5);
-                else if (lose1) you_lose(0);
-                else if (lose2) you_lose(4);
+                if (lose1 && lose2) you_lose(DRAW1);
+                else if (lose1) you_lose(LOSE);
+                else if (lose2) you_lose(WIN);
             }
             cnt = (cnt + 1) % m;
         }
@@ -2212,7 +2214,7 @@ void game_pve()
     }
 }
 
-void you_lose(int c)
+void you_lose(fails f)
 {
     RenderWindow window(sf::VideoMode(800, 400), "Snake");
     window.setPosition(Vector2i(950, 400));
@@ -2227,32 +2229,34 @@ void you_lose(int c)
     text.setPosition(400, 400);
     text.setScale(1, 2);
 
-    if (c == 0)
+    if (f == LOSE)
     {
         text.setString(L"ÂÛ ÏÐÎÈÃÐÀËÈ!\n");
         rec.insert({ score1, player_name + "(green)"});
         ofstream fout("records.txt", ios::app);
         fout << score1 << ' ' << player_name + "(green)" << '\n';
     }
-    if (c == 1)
+    if (f == WIN1)
     {
-        text.setString(L"2 ÈÃÐÎÊ ÏÎÁÅÄÈË\n");
+        text.setString(L"2 ÈÃÐÎÊ ÏÎÁÅÄÈË!\n");
+        text.setPosition(350, 400);
         rec.insert({ score1, player_name + "(green)"});
         rec.insert({ score2, player_name + "(red)" });
         ofstream fout("records.txt", ios::app);
         fout << score1 << ' ' << player_name + "(green)" << '\n';
         fout << score2 << ' ' << player_name + "(red)" << '\n';
     }
-    if (c == 2)
+    if (f == WIN2)
     {
         text.setString(L"1 ÈÃÐÎÊ ÏÎÁÅÄÈË!\n");
+        text.setPosition(350, 400);
         rec.insert({ score1, player_name + "(green)" });
         rec.insert({ score2, player_name + "(red)" });
         ofstream fout("records.txt", ios::app);
         fout << score1 << ' ' << player_name + "(green)" << '\n';
         fout << score2 << ' ' << player_name + "(red)" << '\n';
     }
-    if (c == 3)
+    if (f == DRAW)
     {
         text.setString(L"ÎÁÀ ÏÐÎÈÃÐÀËÈ!\n");
         rec.insert({ score1, player_name + " (green)" });
@@ -2261,14 +2265,14 @@ void you_lose(int c)
         fout << score1 << ' ' << player_name + " (green)" << '\n';
         fout << score2 << ' ' << player_name + " (red)" << '\n';
     }
-    if (c == 4)
+    if (f == WIN)
     {
         text.setString(L"ÂÛ ÏÎÁÅÄÈËÈ!\n");
         rec.insert({ score1, player_name + "(green)" });
         ofstream fout("records.txt", ios::app);
         fout << score1 << ' ' << player_name + "(green)" << '\n';
     }
-    if (c == 5)
+    if (f == DRAW1)
     {
         text.setString(L"ÎÁÀ ÏÐÎÈÃÐÀËÈ!\n");
         rec.insert({ score1, player_name + "(green)" });
