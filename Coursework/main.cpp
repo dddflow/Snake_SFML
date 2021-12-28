@@ -1429,7 +1429,787 @@ void game_pvp()
 
 void game_pve()
 {
-    cout << "NOT READY!\n";
+    dot min_pos = { 10, 10 };
+    int step = 30;
+    dot max_pos = { 1400 - step - min_pos.x, 1400 - step - min_pos.y };
+    dot food_pos;
+    bool eaten1 = 1, eaten2 = 1;
+    score1 = 0;
+    score2 = 0;
+
+    RenderWindow window(VideoMode(1400, 1400), "Snake");
+    window.setPosition(Vector2i(650, 100));
+
+    Texture head1UPTexture;
+    head1UPTexture.loadFromFile("Pics\\Green_head_UP.png");
+    head1UPTexture.setSmooth(true);
+    Texture head1RIGHTTexture;
+    head1RIGHTTexture.loadFromFile("Pics\\Green_head_RIGHT.png");
+    head1RIGHTTexture.setSmooth(true);
+    Texture head1DOWNTexture;
+    head1DOWNTexture.loadFromFile("Pics\\Green_head_DOWN.png");
+    head1DOWNTexture.setSmooth(true);
+    Texture head1LEFTTexture;
+    head1LEFTTexture.loadFromFile("Pics\\Green_head_LEFT.png");
+    head1LEFTTexture.setSmooth(true);
+
+    Sprite head1UP(head1UPTexture);
+    head1UP.setScale(0.09, 0.09);
+    head1UP.setOrigin(90, 180);
+    Sprite head1RIGHT(head1RIGHTTexture);
+    head1RIGHT.setScale(0.09, 0.09);
+    head1RIGHT.setOrigin(0, 100);
+    Sprite head1LEFT(head1LEFTTexture);
+    head1LEFT.setScale(0.09, 0.09);
+    head1LEFT.setOrigin(180, 70);
+    Sprite head1DOWN(head1DOWNTexture);
+    head1DOWN.setScale(0.09, 0.09);
+    head1DOWN.setOrigin(90, 0);
+
+    Texture head2UPTexture;
+    head2UPTexture.loadFromFile("Pics\\Red_head_UP.png");
+    head2UPTexture.setSmooth(true);
+    Texture head2RIGHTTexture;
+    head2RIGHTTexture.loadFromFile("Pics\\Red_head_RIGHT.png");
+    head2RIGHTTexture.setSmooth(true);
+    Texture head2DOWNTexture;
+    head2DOWNTexture.loadFromFile("Pics\\Red_head_DOWN.png");
+    head2DOWNTexture.setSmooth(true);
+    Texture head2LEFTTexture;
+    head2LEFTTexture.loadFromFile("Pics\\Red_head_LEFT.png");
+    head2LEFTTexture.setSmooth(true);
+
+    Sprite head2UP(head2UPTexture);
+    head2UP.setScale(0.09, 0.09);
+    head2UP.setOrigin(90, 180);
+    Sprite head2RIGHT(head2RIGHTTexture);
+    head2RIGHT.setScale(0.09, 0.09);
+    head2RIGHT.setOrigin(0, 100);
+    Sprite head2LEFT(head2LEFTTexture);
+    head2LEFT.setScale(0.09, 0.09);
+    head2LEFT.setOrigin(180, 70);
+    Sprite head2DOWN(head2DOWNTexture);
+    head2DOWN.setScale(0.09, 0.09);
+    head2DOWN.setOrigin(90, 0);
+
+    Texture foodTexture;
+    foodTexture.loadFromFile("Pics\\Food.png");
+    Sprite food(foodTexture);
+    food.setScale(0.03, 0.03);
+
+    Texture pauseTexture;
+    pauseTexture.loadFromFile("Pics\\Pause.png");
+    Sprite pauseButton(pauseTexture);
+    pauseButton.setScale(0.05, 0.05);
+    pauseButton.setPosition(max_pos.x - 2 * step, min_pos.y + 1.5 * step);
+
+    Font font;
+    assert(font.loadFromFile("Fonts\\Segoe Print\\segoeprint.ttf"));
+
+    Text score1_value("", font, 60);
+    score1_value.setPosition(min_pos.x + 1.5 * step, min_pos.y + step);
+    score1_value.setColor(Color(0, 0, 0, 100));
+
+    Text score2_value("", font, 60);
+    score2_value.setPosition(min_pos.x + 1.5 * step, min_pos.y + 3 * step);
+    score2_value.setColor(Color(0, 0, 0, 100));
+
+    int snake1_len = 3;
+    vector <dot> snake1(snake1_len);
+    snake1[0].x = min_pos.x + 3 * step;
+    snake1[1].x = min_pos.x + 2 * step;
+    snake1[2].x = min_pos.x + step;
+    snake1[0].y = min_pos.y + step;
+    snake1[1].y = min_pos.y + step;
+    snake1[2].y = min_pos.y + step;
+
+    int snake2_len = 3;
+    vector <dot> snake2(snake2_len);
+    snake2[0].x = min_pos.x + 3 * step;
+    snake2[1].x = min_pos.x + 2 * step;
+    snake2[2].x = min_pos.x + step;
+    snake2[0].y = max_pos.y - step;
+    snake2[1].y = max_pos.y - step;
+    snake2[2].y = max_pos.y - step;
+
+    vector <CircleShape> snake1_item(snake1_len);
+    vector <CircleShape> snake2_item(snake2_len);
+
+
+    directions direction1 = RIGHT, direction2 = RIGHT;
+
+    Sprite head1 = head1RIGHT;
+    Sprite head2 = head2RIGHT;
+
+    dot tail1, tail2;
+
+    bool end_game = 0, pause_game = 0;
+
+    bool first1 = 1, first2 = 1, work = 1, dir1_changed = 0, dir2_changed = 0;
+    int cnt = 0;
+    while (work)
+    {
+        if (!end_game && !pause_game)
+        {
+            window.clear(Color::White);
+
+            for (int i = 1; i < snake1_len; i++)
+            {
+                snake1_item[i].setRadius(step / 2);
+                snake1_item[i].setPosition(snake1[i].x, snake1[i].y);
+                snake1_item[i].setFillColor(Color::Green);
+            }
+            for (int i = 1; i < snake2_len; i++)
+            {
+                snake2_item[i].setRadius(step / 2);
+                snake2_item[i].setPosition(snake2[i].x, snake2[i].y);
+                snake2_item[i].setFillColor(Color::Red);
+            }
+
+            if (eaten1)
+            {
+                srand(time(0));
+
+                bool find = true;
+                while (find)
+                {
+                    food_pos.x = (rand() % ((max_pos.x - min_pos.x) / step - 2)) * step + min_pos.x + step;
+                    food_pos.y = (rand() % ((max_pos.x - min_pos.x) / step - 2)) * step + min_pos.y + step;
+
+                    find = false;
+                    for (int i = 0; i < snake1_len; i++)
+                        if (snake1[i].x == food_pos.x && snake1[i].y == food_pos.y) find = true;
+                    for (int i = 0; i < snake2_len; i++)
+                        if (snake2[i].x == food_pos.x && snake2[i].y == food_pos.y) find = true;
+                }
+                if (!first1)
+                {
+                    snake1.push_back(tail1);
+                    snake1_item.push_back(snake1_item[snake1_len - 1]);
+                    snake1_len++;
+                }
+                first1 = false;
+                eaten1 = false;
+            }
+            if (eaten2)
+            {
+                srand(time(0));
+
+                bool find = true;
+                while (find)
+                {
+                    food_pos.x = (rand() % ((max_pos.x - min_pos.x) / step - 2)) * step + min_pos.x + step;
+                    food_pos.y = (rand() % ((max_pos.x - min_pos.x) / step - 2)) * step + min_pos.y + step;
+
+                    find = false;
+                    for (int i = 0; i < snake1_len; i++)
+                        if (snake1[i].x == food_pos.x && snake1[i].y == food_pos.y) find = true;
+                    for (int i = 0; i < snake2_len; i++)
+                        if (snake2[i].x == food_pos.x && snake2[i].y == food_pos.y) find = true;
+                }
+                if (!first2)
+                {
+                    snake2.push_back(tail2);
+                    snake2_item.push_back(snake2_item[snake2_len - 1]);
+                    snake2_len++;
+                }
+                first2 = false;
+                eaten2 = false;
+            }
+            food.setPosition(food_pos.x, food_pos.y);
+
+            for (int i = min_pos.x; i <= max_pos.x; i += step)
+            {
+                RectangleShape border(Vector2f(step, step));
+                border.setPosition(i, min_pos.x);
+                border.setFillColor(Color::Black);
+                window.draw(border);
+            }
+            for (int i = min_pos.x; i <= max_pos.x; i += step)
+            {
+                RectangleShape border(Vector2f(step, step));
+                border.setPosition(i, max_pos.x);
+                border.setFillColor(Color::Black);
+                window.draw(border);
+            }
+            for (int i = min_pos.y; i <= max_pos.y; i += step)
+            {
+                RectangleShape border(Vector2f(step, step));
+                border.setPosition(min_pos.y, i);
+                border.setFillColor(Color::Black);
+                window.draw(border);
+            }
+            for (int i = min_pos.x; i <= max_pos.x; i += step)
+            {
+                RectangleShape border(Vector2f(step, step));
+                border.setPosition(max_pos.y, i);
+                border.setFillColor(Color::Black);
+                window.draw(border);
+            }
+
+            window.draw(food);
+
+            head1.setPosition(snake1[0].x, snake1[0].y);
+            window.draw(head1);
+            for (int i = 1; i < snake1_len; i++)
+            {
+                window.draw(snake1_item[i]);
+            }
+
+            head2.setPosition(snake2[0].x, snake2[0].y);
+            window.draw(head2);
+            for (int i = 1; i < snake2_len; i++)
+            {
+                window.draw(snake2_item[i]);
+            }
+
+            if (cnt == m - 1)
+            {
+                dir1_changed = 0;
+                dir2_changed = 0;
+
+                tail1 = snake1[snake1_len - 1];
+                for (int i = snake1_len - 1; i > 0; i--)
+                {
+                    snake1[i].x = snake1[i - 1].x;
+                    snake1[i].y = snake1[i - 1].y;
+                }
+
+                tail2 = snake2[snake2_len - 1];
+                for (int i = snake2_len - 1; i > 0; i--)
+                {
+                    snake2[i].x = snake2[i - 1].x;
+                    snake2[i].y = snake2[i - 1].y;
+                }
+
+                switch (direction1)
+                {
+                case UP:
+                {
+                    snake1[0].y -= step;
+                    break;
+                }
+                case RIGHT:
+                {
+                    snake1[0].x += step;
+                    break;
+                }
+                case DOWN:
+                {
+                    snake1[0].y += step;
+                    break;
+                }
+                case LEFT:
+                {
+                    snake1[0].x -= step;
+                    break;
+                }
+                }
+
+                switch (direction2)
+                {
+                case UP:
+                {
+                    snake2[0].y -= step;
+                    break;
+                }
+                case RIGHT:
+                {
+                    snake2[0].x += step;
+                    break;
+                }
+                case DOWN:
+                {
+                    snake2[0].y += step;
+                    break;
+                }
+                case LEFT:
+                {
+                    snake2[0].x -= step;
+                    break;
+                }
+                }
+
+                if (snake1[0].x == food_pos.x && snake1[0].y == food_pos.y)
+                {
+                    eaten1 = true;
+                    score1 += 7;
+                }
+
+                if (snake2[0].x == food_pos.x && snake2[0].y == food_pos.y)
+                {
+                    eaten2 = true;
+                    score2 += 7;
+                }
+
+                bool lose1 = false, lose2 = false;
+
+                if (snake1[0].x == min_pos.x || snake1[0].x == max_pos.x || snake1[0].y == min_pos.y || snake1[0].y == max_pos.y)
+                {
+                    lose1 = true;
+                    end_game = 1;
+                }
+                if (snake2[0].x == min_pos.x || snake2[0].x == max_pos.x || snake2[0].y == min_pos.y || snake2[0].y == max_pos.y)
+                {
+                    lose2 = true;
+                    end_game = 1;
+                }
+                for (int i = 1; i < snake1_len; i++)
+                    if (snake1[0].x == snake1[i].x && snake1[0].y == snake1[i].y)
+                    {
+                        lose1 = true;
+                        end_game = 1;
+                    }
+                for (int i = 1; i < snake2_len; i++)
+                    if (snake2[0].x == snake2[i].x && snake2[0].y == snake2[i].y)
+                    {
+                        lose2 = true;
+                        end_game = 1;
+                    }
+                for (int i = 0; i < snake1_len; i++)
+                    if (snake2[0].x == snake1[i].x && snake2[0].y == snake1[i].y)
+                    {
+                        lose2 = true;
+                        end_game = 1;
+                    }
+                for (int i = 0; i < snake2_len; i++)
+                    if (snake1[0].x == snake2[i].x && snake1[0].y == snake2[i].y)
+                    {
+                        lose1 = true;
+                        end_game = 1;
+                    }
+
+                if (lose1 && lose2) you_lose(5);
+                else if (lose1) you_lose(0);
+                else if (lose2) you_lose(4);
+            }
+            cnt = (cnt + 1) % m;
+        }
+
+        pauseButton.setColor(Color(0, 0, 0, 100));
+        if (IntRect(max_pos.x - 2 * step, min_pos.y + 1.5 * step, 50, 50).contains(Mouse::getPosition(window)))
+            pauseButton.setColor(Color::Blue);
+        window.draw(pauseButton);
+
+        score1_value.setString(to_string(score1));
+        window.draw(score1_value);
+
+        score2_value.setString(to_string(score2));
+        window.draw(score2_value);
+
+        //////////////// AI_SNAKE
+        if (!dir2_changed)
+        {
+            if (food_pos.x < snake2[0].x && direction2 != RIGHT)
+            {
+                direction2 = LEFT;
+                head2 = head2LEFT;
+                dir2_changed = 1;
+            }
+            else if (food_pos.x > snake2[0].x && direction2 != LEFT)
+            {
+                direction2 = RIGHT;
+                head2 = head2RIGHT;
+                dir2_changed = 1;
+            }
+            else if (food_pos.y < snake2[0].y && direction2 != DOWN)
+            {
+                direction2 = UP;
+                head2 = head2UP;
+                dir2_changed = 1;
+            }
+            else if (food_pos.y > snake2[0].y && direction2 != UP)
+            {
+                direction2 = DOWN;
+                head2 = head2DOWN;
+                dir2_changed = 1;
+            }
+
+            if ((snake2[0].x - step == min_pos.x || snake2[0].x + step == max_pos.x) && (direction2 == RIGHT || direction2 == LEFT))
+            {
+                if (snake2[0].y - step != min_pos.y)
+                {
+                    bool temp = true;
+                    for (int i = 0; i < snake1_len; i++)
+                        if (snake2[0].x == snake1[i].x && snake2[0].y - step == snake1[i].y) temp = false;
+                    for (int i = 1; i < snake2_len; i++)
+                        if (snake2[0].x == snake2[i].x && snake2[0].y - step == snake2[i].y) temp = false;
+                    if (temp)
+                    {
+                        direction2 = UP;
+                        head2 = head2UP;
+                        dir2_changed = 1;
+                    }
+                }
+                else if (snake2[0].y + step != max_pos.y)
+                {
+                    bool temp = true;
+                    for (int i = 0; i < snake1_len; i++)
+                        if (snake2[0].x == snake1[i].x && snake2[0].y + step == snake1[i].y) temp = false;
+                    for (int i = 1; i < snake2_len; i++)
+                        if (snake2[0].x == snake2[i].x && snake2[0].y + step == snake2[i].y) temp = false;
+                    if (temp)
+                    {
+                        direction2 = DOWN;
+                        head2 = head2DOWN;
+                        dir2_changed = 1;
+                    }
+                }
+            }
+            else if ((snake2[0].y - step == min_pos.y || snake2[0].y + step == max_pos.y) && (direction2 == UP || direction2 == DOWN))
+            {
+                if (snake2[0].x - step != min_pos.x)
+                {
+                    bool temp = true;
+                    for (int i = 0; i < snake1_len; i++)
+                        if (snake2[0].x - step == snake1[i].x && snake2[0].y == snake1[i].y) temp = false;
+                    for (int i = 1; i < snake2_len; i++)
+                        if (snake2[0].x - step == snake1[i].x && snake2[0].y == snake1[i].y) temp = false;
+                    if (temp)
+                    {
+                        direction2 = LEFT;
+                        head2 = head2LEFT;
+                        dir2_changed = 1;
+                    }
+                }
+                else if (snake2[0].x + step != max_pos.x)
+                {
+                    bool temp = true;
+                    for (int i = 0; i < snake1_len; i++)
+                        if (snake2[0].x + step == snake1[i].x && snake2[0].y == snake1[i].y) temp = false;
+                    for (int i = 1; i < snake2_len; i++)
+                        if (snake2[0].x + step == snake2[i].x && snake2[0].y == snake2[i].y) temp = false;
+                    if (temp)
+                    {
+                        direction2 = RIGHT;
+                        head2 = head2RIGHT;
+                        dir2_changed = 1;
+                    }
+                }
+            }
+
+            for (int i = 1; i < snake2_len; i++)
+                if (snake2[0].x + step == snake2[i].x && snake2[0].y == snake2[i].y && direction2 == RIGHT)
+                {
+                    if (snake2[0].y - step != min_pos.y)
+                    {
+                        bool temp = true;
+                        for (int i = 0; i < snake1_len; i++)
+                            if (snake2[0].x == snake1[i].x && snake2[0].y - step == snake1[i].y) temp = false;
+                        for (int i = 1; i < snake2_len; i++)
+                            if (snake2[0].x == snake2[i].x && snake2[0].y - step == snake2[i].y) temp = false;
+                        if (temp)
+                        {
+                            direction2 = UP;
+                            head2 = head2UP;
+                            dir2_changed = 1;
+                        }
+                    }
+                    else if (snake2[0].y + step != max_pos.y)
+                    {
+                        bool temp = true;
+                        for (int i = 0; i < snake1_len; i++)
+                            if (snake2[0].x == snake1[i].x && snake2[0].y + step == snake1[i].y) temp = false;
+                        for (int i = 1; i < snake2_len; i++)
+                            if (snake2[0].x == snake2[i].x && snake2[0].y + step == snake2[i].y) temp = false;
+                        if (temp)
+                        {
+                            direction2 = DOWN;
+                            head2 = head2DOWN;
+                            dir2_changed = 1;
+                        }
+                    }
+                }
+            for (int i = 1; i < snake2_len; i++)
+                if (snake2[0].x - step == snake2[i].x && snake2[0].y == snake2[i].y && direction2 == LEFT)
+                {
+                    if (snake2[0].y - step != min_pos.y)
+                    {
+                        bool temp = true;
+                        for (int i = 0; i < snake1_len; i++)
+                            if (snake2[0].x == snake1[i].x && snake2[0].y - step == snake1[i].y) temp = false;
+                        for (int i = 1; i < snake2_len; i++)
+                            if (snake2[0].x == snake2[i].x && snake2[0].y - step == snake2[i].y) temp = false;
+                        if (temp)
+                        {
+                            direction2 = UP;
+                            head2 = head2UP;
+                            dir2_changed = 1;
+                        }
+                    }
+                    else if (snake2[0].y + step != max_pos.y)
+                    {
+                        bool temp = true;
+                        for (int i = 0; i < snake1_len; i++)
+                            if (snake2[0].x == snake1[i].x && snake2[0].y + step == snake1[i].y) temp = false;
+                        for (int i = 1; i < snake2_len; i++)
+                            if (snake2[0].x == snake2[i].x && snake2[0].y + step == snake2[i].y) temp = false;
+                        if (temp)
+                        {
+                            direction2 = DOWN;
+                            head2 = head2DOWN;
+                            dir2_changed = 1;
+                        }
+                    }
+                }
+            for (int i = 1; i < snake2_len; i++)
+                if (snake2[0].x == snake2[i].x && snake2[0].y - step == snake2[i].y && direction2 == UP)
+                {
+                    if (snake2[0].x - step != min_pos.x)
+                    {
+                        bool temp = true;
+                        for (int i = 0; i < snake1_len; i++)
+                            if (snake2[0].x - step == snake1[i].x && snake2[0].y == snake1[i].y) temp = false;
+                        for (int i = 1; i < snake2_len; i++)
+                            if (snake2[0].x - step == snake2[i].x && snake2[0].y == snake2[i].y) temp = false;
+                        if (temp && direction2 != RIGHT)
+                        {
+                            direction2 = LEFT;
+                            head2 = head2LEFT;
+                            dir2_changed = 1;
+                        }
+                    }
+                    else if (snake2[0].x + step != max_pos.x)
+                    {
+                        bool temp = true;
+                        for (int i = 0; i < snake1_len; i++)
+                            if (snake2[0].x + step == snake1[i].x && snake2[0].y == snake1[i].y) temp = false;
+                        for (int i = 1; i < snake2_len; i++)
+                            if (snake2[0].x + step == snake2[i].x && snake2[0].y == snake2[i].y) temp = false;
+                        if (temp && direction2 != LEFT)
+                        {
+                            direction2 = RIGHT;
+                            head2 = head2RIGHT;
+                            dir2_changed = 1;
+                        }
+                    }
+                }
+            for (int i = 1; i < snake2_len; i++)
+                if (snake2[0].x == snake2[i].x && snake2[0].y + step == snake2[i].y && direction2 == DOWN)
+                {
+                    if (snake2[0].x - step != min_pos.x)
+                    {
+                        bool temp = true;
+                        for (int i = 0; i < snake1_len; i++)
+                            if (snake2[0].x - step == snake1[i].x && snake2[0].y == snake1[i].y) temp = false;
+                        for (int i = 1; i < snake2_len; i++)
+                            if (snake2[0].x - step == snake2[i].x && snake2[0].y == snake2[i].y) temp = false;
+                        if (temp && direction2 != RIGHT)
+                        {
+                            direction2 = LEFT;
+                            head2 = head2LEFT;
+                            dir2_changed = 1;
+                        }
+                    }
+                    else if (snake2[0].x + step != max_pos.x)
+                    {
+                        bool temp = true;
+                        for (int i = 0; i < snake1_len; i++)
+                            if (snake2[0].x + step == snake1[i].x && snake2[0].y == snake1[i].y) temp = false;
+                        for (int i = 1; i < snake2_len; i++)
+                            if (snake2[0].x + step == snake2[i].x && snake2[0].y == snake2[i].y) temp = false;
+                        if (temp && direction2 != LEFT)
+                        {
+                            direction2 = RIGHT;
+                            head2 = head2RIGHT;
+                            dir2_changed = 1;
+                        }
+                    }
+                }
+
+            for (int i = 0; i < snake1_len; i++)
+                if (snake2[0].x + step == snake1[i].x && snake2[0].y == snake1[i].y && direction2 == RIGHT)
+                {
+                    if (snake2[0].y - step != min_pos.y)
+                    {
+                        bool temp = true;
+                        for (int i = 0; i < snake1_len; i++)
+                            if (snake2[0].x == snake1[i].x && snake2[0].y - step == snake1[i].y) temp = false;
+                        for (int i = 1; i < snake2_len; i++)
+                            if (snake2[0].x == snake2[i].x && snake2[0].y - step == snake2[i].y) temp = false;
+                        if (temp)
+                        {
+                            direction2 = UP;
+                            head2 = head2UP;
+                            dir2_changed = 1;
+                        }
+                    }
+                    else if (snake2[0].y + step != max_pos.y)
+                    {
+                        bool temp = true;
+                        for (int i = 0; i < snake1_len; i++)
+                            if (snake2[0].x == snake1[i].x && snake2[0].y + step == snake1[i].y) temp = false;
+                        for (int i = 1; i < snake2_len; i++)
+                            if (snake2[0].x == snake2[i].x && snake2[0].y + step == snake2[i].y) temp = false;
+                        if (temp)
+                        {
+                            direction2 = DOWN;
+                            head2 = head2DOWN;
+                            dir2_changed = 1;
+                        }
+                    }
+                }
+            for (int i = 0; i < snake1_len; i++)
+                if (snake2[0].x - step == snake1[i].x && snake2[0].y == snake1[i].y && direction2 == LEFT)
+                {
+                    if (snake2[0].y - step != min_pos.y)
+                    {
+                        bool temp = true;
+                        for (int i = 0; i < snake1_len; i++)
+                            if (snake2[0].x == snake1[i].x && snake2[0].y - step == snake1[i].y) temp = false;
+                        for (int i = 1; i < snake2_len; i++)
+                            if (snake2[0].x == snake2[i].x && snake2[0].y - step == snake2[i].y) temp = false;
+                        if (temp)
+                        {
+                            direction2 = UP;
+                            head2 = head2UP;
+                            dir2_changed = 1;
+                        }
+                    }
+                    else if (snake2[0].y + step != max_pos.y)
+                    {
+                        bool temp = true;
+                        for (int i = 0; i < snake1_len; i++)
+                            if (snake2[0].x == snake1[i].x && snake2[0].y + step == snake1[i].y) temp = false;
+                        for (int i = 1; i < snake2_len; i++)
+                            if (snake2[0].x == snake2[i].x && snake2[0].y + step == snake2[i].y) temp = false;
+                        if (temp)
+                        {
+                            direction2 = DOWN;
+                            head2 = head2DOWN;
+                            dir2_changed = 1;
+                        }
+                    }
+                }
+            for (int i = 0; i < snake1_len; i++)
+                if (snake2[0].x == snake1[i].x && snake2[0].y - step == snake1[i].y && direction2 == UP)
+                {
+                    if (snake2[0].x - step != min_pos.x)
+                    {
+                        bool temp = true;
+                        for (int i = 0; i < snake1_len; i++)
+                            if (snake2[0].x - step == snake1[i].x && snake2[0].y == snake1[i].y) temp = false;
+                        for (int i = 1; i < snake2_len; i++)
+                            if (snake2[0].x - step == snake2[i].x && snake2[0].y == snake2[i].y) temp = false;
+                        if (temp && direction2 != RIGHT)
+                        {
+                            direction2 = LEFT;
+                            head2 = head2LEFT;
+                            dir2_changed = 1;
+                        }
+                    }
+                    else if (snake2[0].x + step != max_pos.x)
+                    {
+                        bool temp = true;
+                        for (int i = 0; i < snake1_len; i++)
+                            if (snake2[0].x + step == snake1[i].x && snake2[0].y == snake1[i].y) temp = false;
+                        for (int i = 1; i < snake2_len; i++)
+                            if (snake2[0].x + step == snake2[i].x && snake2[0].y == snake2[i].y) temp = false;
+                        if (temp && direction2 != LEFT)
+                        {
+                            direction2 = RIGHT;
+                            head2 = head2RIGHT;
+                            dir2_changed = 1;
+                        }
+                    }
+                }
+            for (int i = 0; i < snake1_len; i++)
+                if (snake2[0].x == snake1[i].x && snake2[0].y + step == snake1[i].y && direction2 == DOWN)
+                {
+                    if (snake2[0].x - step != min_pos.x)
+                    {
+                        bool temp = true;
+                        for (int i = 0; i < snake1_len; i++)
+                            if (snake2[0].x - step == snake1[i].x && snake2[0].y == snake1[i].y) temp = false;
+                        for (int i = 1; i < snake2_len; i++)
+                            if (snake2[0].x - step == snake2[i].x && snake2[0].y == snake2[i].y) temp = false;
+                        if (temp && direction2 != RIGHT)
+                        {
+                            direction2 = LEFT;
+                            head2 = head2LEFT;
+                            dir2_changed = 1;
+                        }
+                    }
+                    else if (snake2[0].x + step != max_pos.x)
+                    {
+                        bool temp = true;
+                        for (int i = 0; i < snake1_len; i++)
+                            if (snake2[0].x + step == snake1[i].x && snake2[0].y == snake1[i].y) temp = false;
+                        for (int i = 1; i < snake2_len; i++)
+                            if (snake2[0].x + step == snake2[i].x && snake2[0].y == snake2[i].y) temp = false;
+                        if (temp && direction2 != LEFT)
+                        {
+                            direction2 = RIGHT;
+                            head2 = head2RIGHT;
+                            dir2_changed = 1;
+                        }
+                    }
+                }
+        }
+        ////////////////
+
+        Event event;
+        while (window.pollEvent(event))
+        {
+            if (event.type == Event::KeyReleased && event.key.code == Keyboard::Escape)
+            {
+                window.close();
+                work = 0;
+            }
+
+            if (event.type == sf::Event::Closed)
+            {
+                window.close();
+                work = 0;
+            }
+
+            if (event.type == event.MouseButtonReleased && event.mouseButton.button == Mouse::Left && \
+                IntRect(max_pos.x - 2 * step, min_pos.y + 1.5 * step, 50, 50).contains(Mouse::getPosition(window)) || \
+                event.type == Event::KeyReleased && event.key.code == Keyboard::P)
+            {
+                if (pause_game)
+                {
+                    pause_game = false;
+                    pauseButton.setColor(Color(0, 0, 0, 128));
+                }
+                else
+                {
+                    pause_game = true;
+                    pauseButton.setColor(Color::Black);
+                }
+            }
+
+            if (!dir1_changed)
+            {
+                if (Keyboard::isKeyPressed(Keyboard::Right) && direction1 != LEFT)
+                {
+                    direction1 = RIGHT;
+                    head1 = head1RIGHT;
+                    dir1_changed = 1;
+                }
+                else if (Keyboard::isKeyPressed(Keyboard::Up) && direction1 != DOWN)
+                {
+                    direction1 = UP;
+                    head1 = head1UP;
+                    dir1_changed = 1;
+                }
+                else if (Keyboard::isKeyPressed(Keyboard::Left) && direction1 != RIGHT)
+                {
+                    direction1 = LEFT;
+                    head1 = head1LEFT;
+                    dir1_changed = 1;
+                }
+                else if (Keyboard::isKeyPressed(Keyboard::Down) && direction1 != UP)
+                {
+                    direction1 = DOWN;
+                    head1 = head1DOWN;
+                    dir1_changed = 1;
+                }
+            }
+        }
+
+        window.display();
+    }
 }
 
 void you_lose(int c)
@@ -1480,6 +2260,20 @@ void you_lose(int c)
         ofstream fout("records.txt", ios::app);
         fout << score1 << ' ' << player_name + " (green)" << '\n';
         fout << score2 << ' ' << player_name + " (red)" << '\n';
+    }
+    if (c == 4)
+    {
+        text.setString(L"ÂÛ ÏÎÁÅÄÈËÈ!\n");
+        rec.insert({ score1, player_name + "(green)" });
+        ofstream fout("records.txt", ios::app);
+        fout << score1 << ' ' << player_name + "(green)" << '\n';
+    }
+    if (c == 5)
+    {
+        text.setString(L"ÎÁÀ ÏÐÎÈÃÐÀËÈ!\n");
+        rec.insert({ score1, player_name + "(green)" });
+        ofstream fout("records.txt", ios::app);
+        fout << score1 << ' ' << player_name + "(green)" << '\n';
     }
     
     bool work = 1;
