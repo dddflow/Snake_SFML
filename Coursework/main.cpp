@@ -1801,6 +1801,31 @@ void game_pve()
         //////////////// AI_SNAKE
         if (!dir2_changed)
         {
+            if (food_pos.x < snake2[0].x && direction2 != RIGHT)
+            {
+                direction2 = LEFT;
+                head2 = head2LEFT;
+                dir2_changed = 1;
+            }
+            else if (food_pos.x > snake2[0].x && direction2 != LEFT)
+            {
+                direction2 = RIGHT;
+                head2 = head2RIGHT;
+                dir2_changed = 1;
+            }
+            else if (food_pos.y < snake2[0].y && direction2 != DOWN)
+            {
+                direction2 = UP;
+                head2 = head2UP;
+                dir2_changed = 1;
+            }
+            else if (food_pos.y > snake2[0].y && direction2 != UP)
+            {
+                direction2 = DOWN;
+                head2 = head2DOWN;
+                dir2_changed = 1;
+            }
+
             if ((snake2[0].x - step == min_pos.x || snake2[0].x + step == max_pos.x) && (direction2 == RIGHT || direction2 == LEFT))
             {
                 if (snake2[0].y - step != min_pos.y)
