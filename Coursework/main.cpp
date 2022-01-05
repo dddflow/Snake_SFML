@@ -23,6 +23,8 @@ enum directions {UP, RIGHT, DOWN, LEFT};
 
 enum fails {LOSE, WIN, DRAW, WIN1, WIN2, DRAW1};
 
+enum diff {EASY = 99, MID = 66, HARD = 33};
+
 void main_menu();
 void about();
 void faq();
@@ -34,7 +36,7 @@ void game_pvp();
 void game_pve();
 void records();
 
-int score1, score2, m = 7;
+int score1, score2, m = EASY;
 string player_name;
 
 multiset <pair <int, string>, greater < pair <int, string >>> rec;
@@ -303,7 +305,7 @@ void game_menu()
     }
 
     return;
-}
+} 
 
 void difficulty()
 {
@@ -358,17 +360,17 @@ void difficulty()
 
             switch (m)
             {
-            case 2:
+            case HARD:
             {
                 menu3.setColor(Color::Blue);
                 break;
             }
-            case 4:
+            case MID:
             {
                 menu2.setColor(Color::Blue);
                 break;
             }
-            case 7:
+            case EASY:
             {
                 menu1.setColor(Color::Blue);
                 break;
@@ -389,15 +391,15 @@ void difficulty()
             {
                 if (event.type == event.MouseButtonReleased && event.mouseButton.button == Mouse::Left && \
                     IntRect(menu1_pos[0], menu1_pos[1], 280, 50).contains(Mouse::getPosition(window)))
-                    m = 7;
+                    m = EASY;
 
                 if (event.type == event.MouseButtonReleased && event.mouseButton.button == Mouse::Left && \
                     IntRect(menu2_pos[0], menu2_pos[1], 330, 50).contains(Mouse::getPosition(window)))
-                    m = 4;
+                    m = MID;
 
                 if (event.type == event.MouseButtonReleased && event.mouseButton.button == Mouse::Left && \
                     IntRect(menu3_pos[0], menu3_pos[1], 670, 50).contains(Mouse::getPosition(window)))
-                    m = 2;
+                    m = HARD;
 
                 if (event.type == event.MouseButtonReleased && event.mouseButton.button == Mouse::Left && \
                     IntRect(menu4_pos[0], menu4_pos[1], 220, 50).contains(Mouse::getPosition(window)))
@@ -459,6 +461,8 @@ void records()
 
     Font font;
     assert(font.loadFromFile("Fonts\\Segoe Print\\segoeprint.ttf"));
+    font.loadFromFile("Fonts\\Segoe Print\\segoeprint.ttf");
+
 
     Text text[2][10];
     for (int i = 0; i < 10; i++)
@@ -554,6 +558,8 @@ void about()
 
     Font font;
     assert(font.loadFromFile("Fonts\\Segoe Print\\segoeprint.ttf"));
+    font.loadFromFile("Fonts\\Segoe Print\\segoeprint.ttf");
+
 
     Text text("", font, 40);
     text.setColor(Color::Black);
@@ -624,10 +630,11 @@ void faq()
     back_button.setPosition(back_pos[0], back_pos[1]);
     back_button.setScale(0.7f, 0.7f);
 
-    window.clear(sf::Color::White);
+    window.clear(Color::White);
 
     Font font;
     assert(font.loadFromFile("Fonts\\Segoe Print\\segoeprint.ttf"));
+    font.loadFromFile("Fonts\\Segoe Print\\segoeprint.ttf");
 
     Text text("", font, 40);
     text.setColor(Color::Black);
@@ -2222,6 +2229,8 @@ void you_lose(fails f)
 
     Font font;
     assert(font.loadFromFile("Fonts\\Segoe Print\\segoeprint.ttf"));
+    font.loadFromFile("Fonts\\Segoe Print\\segoeprint.ttf");
+
 
     Text text("", font, 60);
     text.setColor(Color::Black);
