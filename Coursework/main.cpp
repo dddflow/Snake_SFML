@@ -36,10 +36,12 @@ void game_pvp();
 void game_pve();
 void records();
 
-int score1, score2, m = EASY;
+int score1, score2, m = MID;
 string player_name;
 
 multiset <pair <int, string>, greater < pair <int, string >>> rec;
+
+clock_t start, stop;
 
 int main()
 {
@@ -115,6 +117,7 @@ void main_menu()
     int menu6_pos[2] = { 570, 850 };
     menu6.setPosition(menu6_pos[0], menu6_pos[1]);
     menu6.setScale(0.7f, 0.7f);
+
 
     bool work = 1;
     while (work)
@@ -685,9 +688,9 @@ Cтрелки вверх / вниз / влево / вправо.\n-Перемещение для красной змеи:\n Kлавиши
 
 void game()
 {
-    dot min_pos = { 10, 10 };
+    int min_pos = 10;
     int step = 30;
-    dot max_pos = {1400 - step - min_pos.x, 1400 - step - min_pos.y };
+    int max_pos = 1400 - step - min_pos;
     dot food_pos;
     bool eaten = 1;
     score1 = 0;
@@ -730,25 +733,27 @@ void game()
     pauseTexture.loadFromFile("Pics\\Pause.png");
     Sprite pauseButton(pauseTexture);
     pauseButton.setScale(0.05, 0.05);
-    pauseButton.setPosition(max_pos.x - 2*step, min_pos.y + 1.5*step);
+    pauseButton.setPosition(max_pos - 2*step, min_pos + 1.5*step);
 
     Font font;
     assert(font.loadFromFile("Fonts\\Segoe Print\\segoeprint.ttf"));
+    font.loadFromFile("Fonts\\Segoe Print\\segoeprint.ttf");
+
 
     Text score1_value("", font, 60);
-    score1_value.setPosition(min_pos.x + 1.5 * step, min_pos.y + step);
+    score1_value.setPosition(min_pos + 1.5 * step, min_pos + step);
     score1_value.setColor(Color(0, 0, 0, 100));
 
 
     int snake_len = 3;
     vector <dot> snake(snake_len);
    
-    snake[0].x = min_pos.x + 3*step;
-    snake[1].x = min_pos.x + 2*step;
-    snake[2].x = min_pos.x + step;
-    snake[0].y = min_pos.y + step;
-    snake[1].y = min_pos.y + step;
-    snake[2].y = min_pos.y + step;
+    snake[0].x = min_pos + 3*step;
+    snake[1].x = min_pos + 2*step;
+    snake[2].x = min_pos + step;
+    snake[0].y = min_pos + step;
+    snake[1].y = min_pos + step;
+    snake[2].y = min_pos + step;
 
     vector <CircleShape> snake_item (snake_len);
 
@@ -762,6 +767,8 @@ void game()
 
     bool first = 1, work = 1, dir_changed = 0;
     int cnt = 0;
+
+   
     while (work)
     { 
         if (!end_game && !pause_game)
@@ -782,8 +789,8 @@ void game()
                 bool find = true;
                 while (find)
                 {
-                    food_pos.x = (rand() % ((max_pos.x - min_pos.x) / step - 2)) * step + min_pos.x + step;
-                    food_pos.y = (rand() % ((max_pos.x - min_pos.x) / step - 2)) * step + min_pos.y + step;
+                    food_pos.x = (rand() % ((max_pos - min_pos) / step - 2)) * step + min_pos + step;
+                    food_pos.y = (rand() % ((max_pos - min_pos) / step - 2)) * step + min_pos + step;
 
                     find = false;
                     for (int i = 0; i < snake_len; i++)
@@ -802,31 +809,32 @@ void game()
             }
             food.setPosition(food_pos.x, food_pos.y);
 
-            for (int i = min_pos.x; i <= max_pos.x; i += step)
+            for (int i = min_pos; i <= max_pos; i += step)
             {
                 RectangleShape border(Vector2f(step, step));
-                border.setPosition(i, min_pos.x);
+                border.setPosition(i, min_pos);
+                border.setFillColor(Color::Black);
+                window.draw(border);
+
+            }
+            for (int i = min_pos; i <= max_pos; i += step)
+            {
+                RectangleShape border(Vector2f(step, step));
+                border.setPosition(i, max_pos);
                 border.setFillColor(Color::Black);
                 window.draw(border);
             }
-            for (int i = min_pos.x; i <= max_pos.x; i += step)
+            for (int i = min_pos; i <= max_pos; i += step)
             {
                 RectangleShape border(Vector2f(step, step));
-                border.setPosition(i, max_pos.x);
+                border.setPosition(min_pos, i);
                 border.setFillColor(Color::Black);
                 window.draw(border);
             }
-            for (int i = min_pos.y; i <= max_pos.y; i += step)
+            for (int i = min_pos; i <= max_pos; i += step)
             {
                 RectangleShape border(Vector2f(step, step));
-                border.setPosition(min_pos.y, i);
-                border.setFillColor(Color::Black);
-                window.draw(border);
-            }
-            for (int i = min_pos.x; i <= max_pos.x; i += step)
-            {
-                RectangleShape border(Vector2f(step, step));
-                border.setPosition(max_pos.y, i);
+                border.setPosition(max_pos, i);
                 border.setFillColor(Color::Black);
                 window.draw(border);
             }
@@ -881,7 +889,7 @@ void game()
                     score1 += 7;
                 }
 
-                if (snake[0].x == min_pos.x || snake[0].x == max_pos.x || snake[0].y == min_pos.y || snake[0].y == max_pos.y)
+                if (snake[0].x == min_pos || snake[0].x == max_pos || snake[0].y == min_pos || snake[0].y == max_pos)
                 {
                     you_lose(LOSE);
                     end_game = 1;
@@ -900,7 +908,7 @@ void game()
         }
  
         pauseButton.setColor(Color(0, 0, 0, 100));
-        if (IntRect(max_pos.x - 2 * step, min_pos.y + 1.5 * step, 50, 50).contains(Mouse::getPosition(window)))
+        if (IntRect(max_pos - 2 * step, min_pos + 1.5 * step, 50, 50).contains(Mouse::getPosition(window)))
             pauseButton.setColor(Color::Blue);
         window.draw(pauseButton);
 
@@ -923,7 +931,7 @@ void game()
             }
 
             if (event.type == event.MouseButtonReleased && event.mouseButton.button == Mouse::Left && \
-                IntRect(max_pos.x - 2 * step, min_pos.y + 1.5 * step, 50, 50).contains(Mouse::getPosition(window)) || \
+                IntRect(max_pos - 2 * step, min_pos + 1.5 * step, 50, 50).contains(Mouse::getPosition(window)) || \
                 event.type == Event::KeyReleased && event.key.code == Keyboard::P)
             {
                 if (pause_game)
@@ -974,9 +982,9 @@ void game()
 
 void game_pvp()
 {
-    dot min_pos = { 10, 10 };
+    int min_pos = 10;
     int step = 30;
-    dot max_pos = { 1400 - step - min_pos.x, 1400 - step - min_pos.y };
+    int max_pos = 1400 - step - min_pos;
     dot food_pos;
     bool eaten1 = 1, eaten2 = 1;
     score1 = 0;
@@ -1046,36 +1054,37 @@ void game_pvp()
     pauseTexture.loadFromFile("Pics\\Pause.png");
     Sprite pauseButton(pauseTexture);
     pauseButton.setScale(0.05, 0.05);
-    pauseButton.setPosition(max_pos.x - 2 * step, min_pos.y + 1.5 * step);
+    pauseButton.setPosition(max_pos - 2 * step, min_pos + 1.5 * step);
 
     Font font;
     assert(font.loadFromFile("Fonts\\Segoe Print\\segoeprint.ttf"));
+    font.loadFromFile("Fonts\\Segoe Print\\segoeprint.ttf");
 
     Text score1_value("", font, 60);
-    score1_value.setPosition(min_pos.x + 1.5 * step, min_pos.y + step);
+    score1_value.setPosition(min_pos + 1.5 * step, min_pos + step);
     score1_value.setColor(Color(0, 0, 0, 100));
 
     Text score2_value("", font, 60);
-    score2_value.setPosition(min_pos.x + 1.5 * step, min_pos.y + 3*step);
+    score2_value.setPosition(min_pos + 1.5 * step, min_pos + 3*step);
     score2_value.setColor(Color(0, 0, 0, 100));
 
     int snake1_len = 3;
     vector <dot> snake1(snake1_len);
-    snake1[0].x = min_pos.x + 3 * step;
-    snake1[1].x = min_pos.x + 2 * step;
-    snake1[2].x = min_pos.x + step;
-    snake1[0].y = min_pos.y + step;
-    snake1[1].y = min_pos.y + step;
-    snake1[2].y = min_pos.y + step;
+    snake1[0].x = min_pos + 3 * step;
+    snake1[1].x = min_pos + 2 * step;
+    snake1[2].x = min_pos + step;
+    snake1[0].y = min_pos + step;
+    snake1[1].y = min_pos + step;
+    snake1[2].y = min_pos + step;
 
     int snake2_len = 3;
     vector <dot> snake2(snake2_len);
-    snake2[0].x = min_pos.x + 3 * step;
-    snake2[1].x = min_pos.x + 2 * step;
-    snake2[2].x = min_pos.x + step;
-    snake2[0].y = max_pos.y - step;
-    snake2[1].y = max_pos.y - step;
-    snake2[2].y = max_pos.y - step;
+    snake2[0].x = min_pos + 3 * step;
+    snake2[1].x = min_pos + 2 * step;
+    snake2[2].x = min_pos + step;
+    snake2[0].y = max_pos - step;
+    snake2[1].y = max_pos - step;
+    snake2[2].y = max_pos - step;
 
     vector <CircleShape> snake1_item (snake1_len);
     vector <CircleShape> snake2_item (snake2_len);
@@ -1092,6 +1101,7 @@ void game_pvp()
 
     bool first1 = 1, first2 = 1, work = 1, dir1_changed = 0, dir2_changed = 0;
     int cnt = 0;
+
     while (work)
     {
         if (!end_game && !pause_game)
@@ -1118,8 +1128,8 @@ void game_pvp()
                 bool find = true;
                 while (find)
                 {
-                    food_pos.x = (rand() % ((max_pos.x - min_pos.x) / step - 2)) * step + min_pos.x + step;
-                    food_pos.y = (rand() % ((max_pos.x - min_pos.x) / step - 2)) * step + min_pos.y + step;
+                    food_pos.x = (rand() % ((max_pos - min_pos) / step - 2)) * step + min_pos + step;
+                    food_pos.y = (rand() % ((max_pos - min_pos) / step - 2)) * step + min_pos + step;
 
                     find = false;
                     for (int i = 0; i < snake1_len; i++)
@@ -1143,8 +1153,8 @@ void game_pvp()
                 bool find = true;
                 while (find)
                 {
-                    food_pos.x = (rand() % ((max_pos.x - min_pos.x) / step - 2)) * step + min_pos.x + step;
-                    food_pos.y = (rand() % ((max_pos.x - min_pos.x) / step - 2)) * step + min_pos.y + step;
+                    food_pos.x = (rand() % ((max_pos - min_pos) / step - 2)) * step + min_pos + step;
+                    food_pos.y = (rand() % ((max_pos - min_pos) / step - 2)) * step + min_pos + step;
 
                     find = false;
                     for (int i = 0; i < snake1_len; i++) 
@@ -1163,31 +1173,31 @@ void game_pvp()
             }
             food.setPosition(food_pos.x, food_pos.y);
 
-            for (int i = min_pos.x; i <= max_pos.x; i += step)
+            for (int i = min_pos; i <= max_pos; i += step)
             {
                 RectangleShape border(Vector2f(step, step));
-                border.setPosition(i, min_pos.x);
+                border.setPosition(i, min_pos);
                 border.setFillColor(Color::Black);
                 window.draw(border);
             }
-            for (int i = min_pos.x; i <= max_pos.x; i += step)
+            for (int i = min_pos; i <= max_pos; i += step)
             {
                 RectangleShape border(Vector2f(step, step));
-                border.setPosition(i, max_pos.x);
+                border.setPosition(i, max_pos);
                 border.setFillColor(Color::Black);
                 window.draw(border);
             }
-            for (int i = min_pos.y; i <= max_pos.y; i += step)
+            for (int i = min_pos; i <= max_pos; i += step)
             {
                 RectangleShape border(Vector2f(step, step));
-                border.setPosition(min_pos.y, i);
+                border.setPosition(min_pos, i);
                 border.setFillColor(Color::Black);
                 window.draw(border);
             }
-            for (int i = min_pos.x; i <= max_pos.x; i += step)
+            for (int i = min_pos; i <= max_pos; i += step)
             {
                 RectangleShape border(Vector2f(step, step));
-                border.setPosition(max_pos.y, i);
+                border.setPosition(max_pos, i);
                 border.setFillColor(Color::Black);
                 window.draw(border);
             }
@@ -1289,12 +1299,12 @@ void game_pvp()
 
                 bool lose1 = false, lose2 = false;
 
-                if (snake1[0].x == min_pos.x || snake1[0].x == max_pos.x || snake1[0].y == min_pos.y || snake1[0].y == max_pos.y)
+                if (snake1[0].x == min_pos || snake1[0].x == max_pos || snake1[0].y == min_pos || snake1[0].y == max_pos)
                 {
                     lose1 = true;
                     end_game = 1;
                 }
-                if (snake2[0].x == min_pos.x || snake2[0].x == max_pos.x || snake2[0].y == min_pos.y || snake2[0].y == max_pos.y)
+                if (snake2[0].x == min_pos || snake2[0].x == max_pos || snake2[0].y == min_pos || snake2[0].y == max_pos)
                 {
                     lose2 = true;
                     end_game = 1;
@@ -1332,7 +1342,7 @@ void game_pvp()
         }
 
         pauseButton.setColor(Color(0, 0, 0, 100));
-        if (IntRect(max_pos.x - 2 * step, min_pos.y + 1.5 * step, 50, 50).contains(Mouse::getPosition(window)))
+        if (IntRect(max_pos - 2 * step, min_pos + 1.5 * step, 50, 50).contains(Mouse::getPosition(window)))
             pauseButton.setColor(Color::Blue);
         window.draw(pauseButton);
 
@@ -1358,7 +1368,7 @@ void game_pvp()
             }
 
             if (event.type == event.MouseButtonReleased && event.mouseButton.button == Mouse::Left && \
-                IntRect(max_pos.x - 2 * step, min_pos.y + 1.5 * step, 50, 50).contains(Mouse::getPosition(window)) || \
+                IntRect(max_pos - 2 * step, min_pos + 1.5 * step, 50, 50).contains(Mouse::getPosition(window)) || \
                 event.type == Event::KeyReleased && event.key.code == Keyboard::P)
             {
                 if (pause_game)
@@ -1437,9 +1447,9 @@ void game_pvp()
 
 void game_pve()
 {
-    dot min_pos = { 10, 10 };
+    int min_pos = 10;
     int step = 30;
-    dot max_pos = { 1400 - step - min_pos.x, 1400 - step - min_pos.y };
+    int max_pos = 1400 - step - min_pos;
     dot food_pos;
     bool eaten1 = 1, eaten2 = 1;
     score1 = 0;
@@ -1509,36 +1519,37 @@ void game_pve()
     pauseTexture.loadFromFile("Pics\\Pause.png");
     Sprite pauseButton(pauseTexture);
     pauseButton.setScale(0.05, 0.05);
-    pauseButton.setPosition(max_pos.x - 2 * step, min_pos.y + 1.5 * step);
+    pauseButton.setPosition(max_pos - 2 * step, min_pos + 1.5 * step);
 
     Font font;
     assert(font.loadFromFile("Fonts\\Segoe Print\\segoeprint.ttf"));
+    font.loadFromFile("Fonts\\Segoe Print\\segoeprint.ttf");
 
     Text score1_value("", font, 60);
-    score1_value.setPosition(min_pos.x + 1.5 * step, min_pos.y + step);
+    score1_value.setPosition(min_pos + 1.5 * step, min_pos + step);
     score1_value.setColor(Color(0, 0, 0, 100));
 
     Text score2_value("", font, 60);
-    score2_value.setPosition(min_pos.x + 1.5 * step, min_pos.y + 3 * step);
+    score2_value.setPosition(min_pos + 1.5 * step, min_pos + 3 * step);
     score2_value.setColor(Color(0, 0, 0, 100));
 
     int snake1_len = 3;
     vector <dot> snake1(snake1_len);
-    snake1[0].x = min_pos.x + 3 * step;
-    snake1[1].x = min_pos.x + 2 * step;
-    snake1[2].x = min_pos.x + step;
-    snake1[0].y = min_pos.y + step;
-    snake1[1].y = min_pos.y + step;
-    snake1[2].y = min_pos.y + step;
+    snake1[0].x = min_pos + 3 * step;
+    snake1[1].x = min_pos + 2 * step;
+    snake1[2].x = min_pos + step;
+    snake1[0].y = min_pos + step;
+    snake1[1].y = min_pos + step;
+    snake1[2].y = min_pos + step;
 
     int snake2_len = 3;
     vector <dot> snake2(snake2_len);
-    snake2[0].x = min_pos.x + 3 * step;
-    snake2[1].x = min_pos.x + 2 * step;
-    snake2[2].x = min_pos.x + step;
-    snake2[0].y = max_pos.y - step;
-    snake2[1].y = max_pos.y - step;
-    snake2[2].y = max_pos.y - step;
+    snake2[0].x = min_pos + 3 * step;
+    snake2[1].x = min_pos + 2 * step;
+    snake2[2].x = min_pos + step;
+    snake2[0].y = max_pos - step;
+    snake2[1].y = max_pos - step;
+    snake2[2].y = max_pos - step;
 
     vector <CircleShape> snake1_item(snake1_len);
     vector <CircleShape> snake2_item(snake2_len);
@@ -1555,6 +1566,7 @@ void game_pve()
 
     bool first1 = 1, first2 = 1, work = 1, dir1_changed = 0, dir2_changed = 0;
     int cnt = 0;
+
     while (work)
     {
         if (!end_game && !pause_game)
@@ -1581,8 +1593,8 @@ void game_pve()
                 bool find = true;
                 while (find)
                 {
-                    food_pos.x = (rand() % ((max_pos.x - min_pos.x) / step - 2)) * step + min_pos.x + step;
-                    food_pos.y = (rand() % ((max_pos.x - min_pos.x) / step - 2)) * step + min_pos.y + step;
+                    food_pos.x = (rand() % ((max_pos - min_pos) / step - 2)) * step + min_pos + step;
+                    food_pos.y = (rand() % ((max_pos - min_pos) / step - 2)) * step + min_pos + step;
 
                     find = false;
                     for (int i = 0; i < snake1_len; i++)
@@ -1606,8 +1618,8 @@ void game_pve()
                 bool find = true;
                 while (find)
                 {
-                    food_pos.x = (rand() % ((max_pos.x - min_pos.x) / step - 2)) * step + min_pos.x + step;
-                    food_pos.y = (rand() % ((max_pos.x - min_pos.x) / step - 2)) * step + min_pos.y + step;
+                    food_pos.x = (rand() % ((max_pos - min_pos) / step - 2)) * step + min_pos + step;
+                    food_pos.y = (rand() % ((max_pos - min_pos) / step - 2)) * step + min_pos + step;
 
                     find = false;
                     for (int i = 0; i < snake1_len; i++)
@@ -1626,31 +1638,31 @@ void game_pve()
             }
             food.setPosition(food_pos.x, food_pos.y);
 
-            for (int i = min_pos.x; i <= max_pos.x; i += step)
+            for (int i = min_pos; i <= max_pos; i += step)
             {
                 RectangleShape border(Vector2f(step, step));
-                border.setPosition(i, min_pos.x);
+                border.setPosition(i, min_pos);
                 border.setFillColor(Color::Black);
                 window.draw(border);
             }
-            for (int i = min_pos.x; i <= max_pos.x; i += step)
+            for (int i = min_pos; i <= max_pos; i += step)
             {
                 RectangleShape border(Vector2f(step, step));
-                border.setPosition(i, max_pos.x);
+                border.setPosition(i, max_pos);
                 border.setFillColor(Color::Black);
                 window.draw(border);
             }
-            for (int i = min_pos.y; i <= max_pos.y; i += step)
+            for (int i = min_pos; i <= max_pos; i += step)
             {
                 RectangleShape border(Vector2f(step, step));
-                border.setPosition(min_pos.y, i);
+                border.setPosition(min_pos, i);
                 border.setFillColor(Color::Black);
                 window.draw(border);
             }
-            for (int i = min_pos.x; i <= max_pos.x; i += step)
+            for (int i = min_pos; i <= max_pos; i += step)
             {
                 RectangleShape border(Vector2f(step, step));
-                border.setPosition(max_pos.y, i);
+                border.setPosition(max_pos, i);
                 border.setFillColor(Color::Black);
                 window.draw(border);
             }
@@ -1752,12 +1764,12 @@ void game_pve()
 
                 bool lose1 = false, lose2 = false;
 
-                if (snake1[0].x == min_pos.x || snake1[0].x == max_pos.x || snake1[0].y == min_pos.y || snake1[0].y == max_pos.y)
+                if (snake1[0].x == min_pos || snake1[0].x == max_pos || snake1[0].y == min_pos || snake1[0].y == max_pos)
                 {
                     lose1 = true;
                     end_game = 1;
                 }
-                if (snake2[0].x == min_pos.x || snake2[0].x == max_pos.x || snake2[0].y == min_pos.y || snake2[0].y == max_pos.y)
+                if (snake2[0].x == min_pos || snake2[0].x == max_pos || snake2[0].y == min_pos || snake2[0].y == max_pos)
                 {
                     lose2 = true;
                     end_game = 1;
@@ -1795,7 +1807,7 @@ void game_pve()
         }
 
         pauseButton.setColor(Color(0, 0, 0, 100));
-        if (IntRect(max_pos.x - 2 * step, min_pos.y + 1.5 * step, 50, 50).contains(Mouse::getPosition(window)))
+        if (IntRect(max_pos - 2 * step, min_pos + 1.5 * step, 50, 50).contains(Mouse::getPosition(window)))
             pauseButton.setColor(Color::Blue);
         window.draw(pauseButton);
 
@@ -1833,9 +1845,9 @@ void game_pve()
                 dir2_changed = 1;
             }
 
-            if ((snake2[0].x - step == min_pos.x || snake2[0].x + step == max_pos.x) && (direction2 == RIGHT || direction2 == LEFT))
+            if ((snake2[0].x - step == min_pos || snake2[0].x + step == max_pos) && (direction2 == RIGHT || direction2 == LEFT))
             {
-                if (snake2[0].y - step != min_pos.y)
+                if (snake2[0].y - step != min_pos)
                 {
                     bool temp = true;
                     for (int i = 0; i < snake1_len; i++)
@@ -1849,7 +1861,7 @@ void game_pve()
                         dir2_changed = 1;
                     }
                 }
-                else if (snake2[0].y + step != max_pos.y)
+                else if (snake2[0].y + step != max_pos)
                 {
                     bool temp = true;
                     for (int i = 0; i < snake1_len; i++)
@@ -1864,9 +1876,9 @@ void game_pve()
                     }
                 }
             }
-            else if ((snake2[0].y - step == min_pos.y || snake2[0].y + step == max_pos.y) && (direction2 == UP || direction2 == DOWN))
+            else if ((snake2[0].y - step == min_pos || snake2[0].y + step == max_pos) && (direction2 == UP || direction2 == DOWN))
             {
-                if (snake2[0].x - step != min_pos.x)
+                if (snake2[0].x - step != min_pos)
                 {
                     bool temp = true;
                     for (int i = 0; i < snake1_len; i++)
@@ -1880,7 +1892,7 @@ void game_pve()
                         dir2_changed = 1;
                     }
                 }
-                else if (snake2[0].x + step != max_pos.x)
+                else if (snake2[0].x + step != max_pos)
                 {
                     bool temp = true;
                     for (int i = 0; i < snake1_len; i++)
@@ -1899,7 +1911,7 @@ void game_pve()
             for (int i = 1; i < snake2_len; i++)
                 if (snake2[0].x + step == snake2[i].x && snake2[0].y == snake2[i].y && direction2 == RIGHT)
                 {
-                    if (snake2[0].y - step != min_pos.y)
+                    if (snake2[0].y - step != min_pos)
                     {
                         bool temp = true;
                         for (int i = 0; i < snake1_len; i++)
@@ -1913,7 +1925,7 @@ void game_pve()
                             dir2_changed = 1;
                         }
                     }
-                    else if (snake2[0].y + step != max_pos.y)
+                    else if (snake2[0].y + step != max_pos)
                     {
                         bool temp = true;
                         for (int i = 0; i < snake1_len; i++)
@@ -1931,7 +1943,7 @@ void game_pve()
             for (int i = 1; i < snake2_len; i++)
                 if (snake2[0].x - step == snake2[i].x && snake2[0].y == snake2[i].y && direction2 == LEFT)
                 {
-                    if (snake2[0].y - step != min_pos.y)
+                    if (snake2[0].y - step != min_pos)
                     {
                         bool temp = true;
                         for (int i = 0; i < snake1_len; i++)
@@ -1945,7 +1957,7 @@ void game_pve()
                             dir2_changed = 1;
                         }
                     }
-                    else if (snake2[0].y + step != max_pos.y)
+                    else if (snake2[0].y + step != max_pos)
                     {
                         bool temp = true;
                         for (int i = 0; i < snake1_len; i++)
@@ -1963,7 +1975,7 @@ void game_pve()
             for (int i = 1; i < snake2_len; i++)
                 if (snake2[0].x == snake2[i].x && snake2[0].y - step == snake2[i].y && direction2 == UP)
                 {
-                    if (snake2[0].x - step != min_pos.x)
+                    if (snake2[0].x - step != min_pos)
                     {
                         bool temp = true;
                         for (int i = 0; i < snake1_len; i++)
@@ -1977,7 +1989,7 @@ void game_pve()
                             dir2_changed = 1;
                         }
                     }
-                    else if (snake2[0].x + step != max_pos.x)
+                    else if (snake2[0].x + step != max_pos)
                     {
                         bool temp = true;
                         for (int i = 0; i < snake1_len; i++)
@@ -1995,7 +2007,7 @@ void game_pve()
             for (int i = 1; i < snake2_len; i++)
                 if (snake2[0].x == snake2[i].x && snake2[0].y + step == snake2[i].y && direction2 == DOWN)
                 {
-                    if (snake2[0].x - step != min_pos.x)
+                    if (snake2[0].x - step != min_pos)
                     {
                         bool temp = true;
                         for (int i = 0; i < snake1_len; i++)
@@ -2009,7 +2021,7 @@ void game_pve()
                             dir2_changed = 1;
                         }
                     }
-                    else if (snake2[0].x + step != max_pos.x)
+                    else if (snake2[0].x + step != max_pos)
                     {
                         bool temp = true;
                         for (int i = 0; i < snake1_len; i++)
@@ -2028,7 +2040,7 @@ void game_pve()
             for (int i = 0; i < snake1_len; i++)
                 if (snake2[0].x + step == snake1[i].x && snake2[0].y == snake1[i].y && direction2 == RIGHT)
                 {
-                    if (snake2[0].y - step != min_pos.y)
+                    if (snake2[0].y - step != min_pos)
                     {
                         bool temp = true;
                         for (int i = 0; i < snake1_len; i++)
@@ -2042,7 +2054,7 @@ void game_pve()
                             dir2_changed = 1;
                         }
                     }
-                    else if (snake2[0].y + step != max_pos.y)
+                    else if (snake2[0].y + step != max_pos)
                     {
                         bool temp = true;
                         for (int i = 0; i < snake1_len; i++)
@@ -2060,7 +2072,7 @@ void game_pve()
             for (int i = 0; i < snake1_len; i++)
                 if (snake2[0].x - step == snake1[i].x && snake2[0].y == snake1[i].y && direction2 == LEFT)
                 {
-                    if (snake2[0].y - step != min_pos.y)
+                    if (snake2[0].y - step != min_pos)
                     {
                         bool temp = true;
                         for (int i = 0; i < snake1_len; i++)
@@ -2074,7 +2086,7 @@ void game_pve()
                             dir2_changed = 1;
                         }
                     }
-                    else if (snake2[0].y + step != max_pos.y)
+                    else if (snake2[0].y + step != max_pos)
                     {
                         bool temp = true;
                         for (int i = 0; i < snake1_len; i++)
@@ -2092,7 +2104,7 @@ void game_pve()
             for (int i = 0; i < snake1_len; i++)
                 if (snake2[0].x == snake1[i].x && snake2[0].y - step == snake1[i].y && direction2 == UP)
                 {
-                    if (snake2[0].x - step != min_pos.x)
+                    if (snake2[0].x - step != min_pos)
                     {
                         bool temp = true;
                         for (int i = 0; i < snake1_len; i++)
@@ -2106,7 +2118,7 @@ void game_pve()
                             dir2_changed = 1;
                         }
                     }
-                    else if (snake2[0].x + step != max_pos.x)
+                    else if (snake2[0].x + step != max_pos)
                     {
                         bool temp = true;
                         for (int i = 0; i < snake1_len; i++)
@@ -2124,7 +2136,7 @@ void game_pve()
             for (int i = 0; i < snake1_len; i++)
                 if (snake2[0].x == snake1[i].x && snake2[0].y + step == snake1[i].y && direction2 == DOWN)
                 {
-                    if (snake2[0].x - step != min_pos.x)
+                    if (snake2[0].x - step != min_pos)
                     {
                         bool temp = true;
                         for (int i = 0; i < snake1_len; i++)
@@ -2138,7 +2150,7 @@ void game_pve()
                             dir2_changed = 1;
                         }
                     }
-                    else if (snake2[0].x + step != max_pos.x)
+                    else if (snake2[0].x + step != max_pos)
                     {
                         bool temp = true;
                         for (int i = 0; i < snake1_len; i++)
@@ -2172,7 +2184,7 @@ void game_pve()
             }
 
             if (event.type == event.MouseButtonReleased && event.mouseButton.button == Mouse::Left && \
-                IntRect(max_pos.x - 2 * step, min_pos.y + 1.5 * step, 50, 50).contains(Mouse::getPosition(window)) || \
+                IntRect(max_pos - 2 * step, min_pos + 1.5 * step, 50, 50).contains(Mouse::getPosition(window)) || \
                 event.type == Event::KeyReleased && event.key.code == Keyboard::P)
             {
                 if (pause_game)
