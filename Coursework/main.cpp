@@ -690,8 +690,8 @@ void game()
 {
     int min_pos = 10;
     int step = 30;
-    int max_pos;
 
+    int max_pos;
     __asm
     {
         mov eax, step
@@ -1340,14 +1340,30 @@ void game_pvp()
 
                 if (snake1[0].x == food_pos.x && snake1[0].y == food_pos.y)
                 {
-                    eaten1 = true;
-                    score1 += 7;
+                    __asm
+                    {
+                        mov ah, eaten1
+                        mov ah, 1
+                        mov eaten1, ah
+
+                        mov eax, score1
+                        add eax, 7
+                        mov score1, eax
+                    }
                 }
 
                 if (snake2[0].x == food_pos.x && snake2[0].y == food_pos.y)
                 {
-                    eaten2 = true;
-                    score2 += 7;
+                    __asm
+                    {
+                        mov ah, eaten2
+                        mov ah, 1
+                        mov eaten2, ah
+
+                        mov eax, score2
+                        add eax, 7
+                        mov score2, eax
+                    }
                 }
 
                 bool lose1 = false, lose2 = false;
@@ -1837,14 +1853,30 @@ void game_pve()
 
                 if (snake1[0].x == food_pos.x && snake1[0].y == food_pos.y)
                 {
-                    eaten1 = true;
-                    score1 += 7;
+                    __asm
+                    {
+                        mov ah, eaten1
+                        mov ah, 1
+                        mov eaten1, ah
+
+                        mov eax, score1
+                        add eax, 7
+                        mov score1, eax
+                    }
                 }
 
                 if (snake2[0].x == food_pos.x && snake2[0].y == food_pos.y)
                 {
-                    eaten2 = true;
-                    score2 += 7;
+                    __asm
+                    {
+                        mov ah, eaten2
+                        mov ah, 1
+                        mov eaten2, ah
+
+                        mov eax, score2
+                        add eax, 7
+                        mov score2, eax
+                    }
                 }
 
                 bool lose1 = false, lose2 = false;
