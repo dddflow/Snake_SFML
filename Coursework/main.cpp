@@ -63,6 +63,7 @@ int main()
 	return 0;
 }
 
+//добавил, что мы крутые
 void main_menu()
 {
     RenderWindow window(sf::VideoMode(1400, 1400), "Snake");
