@@ -690,7 +690,17 @@ void game()
 {
     int min_pos = 10;
     int step = 30;
-    int max_pos = 1400 - step - min_pos;
+    int max_pos;
+
+    __asm
+    {
+        mov eax, step
+        add eax, min_pos
+        mov ebx, 1400
+        sub ebx, eax
+        mov max_pos, ebx
+    }
+
     dot food_pos;
     bool eaten = 1;
     score1 = 0;
@@ -763,10 +773,21 @@ void game()
 
     dot tail;
 
-    bool end_game = 0, pause_game = 0;
+    bool end_game, pause_game;
 
-    bool first = 1, work = 1, dir_changed = 0;
+    bool first, work, dir_changed;
     int cnt = 0;
+
+    __asm
+    {
+        xor ah, ah
+        mov end_game, ah
+        mov pause_game, ah
+        mov dir_changed, ah
+        inc ah
+        mov first,ah
+        mov work, ah
+    }
 
    
     while (work)
