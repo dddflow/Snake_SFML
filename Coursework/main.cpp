@@ -2363,7 +2363,7 @@ void you_lose(fails f)
 
     Text text("", font, 60);
     text.setColor(Color::Black);
-    text.setPosition(400, 400);
+    text.setPosition(400, 600);
     text.setScale(1, 2);
 
     if (f == LOSE)
@@ -2376,7 +2376,7 @@ void you_lose(fails f)
     if (f == WIN1)
     {
         text.setString(L"2 »√–Œ  œŒ¡≈ƒ»À!\n");
-        text.setPosition(350, 400);
+        text.setPosition(350, 600);
         rec.insert({ score1, player_name + "(green)"});
         rec.insert({ score2, player_name + "(red)" });
         ofstream fout("records.txt", ios::app);
@@ -2386,7 +2386,7 @@ void you_lose(fails f)
     if (f == WIN2)
     {
         text.setString(L"1 »√–Œ  œŒ¡≈ƒ»À!\n");
-        text.setPosition(350, 400);
+        text.setPosition(350, 600);
         rec.insert({ score1, player_name + "(green)" });
         rec.insert({ score2, player_name + "(red)" });
         ofstream fout("records.txt", ios::app);
