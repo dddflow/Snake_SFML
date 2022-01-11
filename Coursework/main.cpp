@@ -1705,7 +1705,7 @@ void game_pve()
                 {
                     xor ah, ah
                     mov first1, ah
-                    mov first2, ah
+                    mov eaten1, ah
                 }
             }
             if (eaten2)
