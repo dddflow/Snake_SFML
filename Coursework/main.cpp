@@ -23,7 +23,7 @@ enum directions {UP, RIGHT, DOWN, LEFT};
 
 enum fails {LOSE, WIN, DRAW, WIN1, WIN2, DRAW1};
 
-enum diff {EASY = 99, MID = 66, HARD = 33};
+enum diff {EASY = 9, MID = 6, HARD = 3};
 
 void main_menu();
 void about();
@@ -36,7 +36,7 @@ void game_pvp();
 void game_pve();
 void records();
 
-int score1, score2, m = MID;
+int score1, score2, m = EASY;
 string player_name;
 
 multiset <pair <int, string>, greater < pair <int, string >>> rec;
@@ -63,11 +63,11 @@ int main()
 	return 0;
 }
 
-//‰Ó·‡‚ËÎ, ˜ÚÓ Ï˚ ÍÛÚ˚Â
 void main_menu()
 {
     RenderWindow window(sf::VideoMode(1400, 1400), "Snake");
     window.setPosition(Vector2i(650,100));
+    window.setFramerateLimit(60);
 
     Texture menuTexture[6];
     menuTexture[0].loadFromFile("Pics\\NewGame.png");
@@ -208,6 +208,7 @@ void game_menu()
 {
     RenderWindow window(sf::VideoMode(1400, 1400), "Snake");
     window.setPosition(Vector2i(650, 100));
+    window.setFramerateLimit(60);
 
     Texture menuTexture[4];
     menuTexture[0].loadFromFile("Pics\\1player.png");
@@ -315,6 +316,7 @@ void difficulty()
 {
     RenderWindow window(sf::VideoMode(1400, 1400), "Snake");
     window.setPosition(Vector2i(650, 100));
+    window.setFramerateLimit(60);
 
     Texture menuTexture[4];
     menuTexture[0].loadFromFile("Pics\\Easy.png");
@@ -441,6 +443,7 @@ void records()
 {
     RenderWindow window(sf::VideoMode(1400, 1400), "Snake");
     window.setPosition(Vector2i(650, 100));
+    window.setFramerateLimit(60);
 
     Texture headerTexture;
     headerTexture.loadFromFile("Pics\\Records.png");
@@ -538,6 +541,7 @@ void about()
 {
     RenderWindow window(sf::VideoMode(1400, 1400), "Snake");
     window.setPosition(Vector2i(650, 100));
+    window.setFramerateLimit(60);
     
     Texture headerTexture;
     headerTexture.loadFromFile("Pics\\About.png");
@@ -614,6 +618,7 @@ void faq()
 {
     RenderWindow window(sf::VideoMode(1400, 1400), "Snake");
     window.setPosition(Vector2i(650, 100));
+    window.setFramerateLimit(60);
 
     Texture headerTexture;
     headerTexture.loadFromFile("Pics\\About.png");
@@ -691,13 +696,24 @@ void game()
 {
     int min_pos = 10;
     int step = 30;
-    int max_pos = 1400 - step - min_pos;
+
+    int max_pos;
+    __asm
+    {
+        mov eax, step
+        add eax, min_pos
+        mov ebx, 1400
+        sub ebx, eax
+        mov max_pos, ebx
+    }
+
     dot food_pos;
     bool eaten = 1;
     score1 = 0;
 
     RenderWindow window(VideoMode(1400, 1400), "Snake");
     window.setPosition(Vector2i(650, 100));
+    window.setFramerateLimit(60);
 
     Texture headUPTexture;
     headUPTexture.loadFromFile("Pics\\Green_head_UP.png");
@@ -749,7 +765,7 @@ void game()
     int snake_len = 3;
     vector <dot> snake(snake_len);
    
-    snake[0].x = min_pos + 3*step;
+    snake[0].x = min_pos + 3 * step;
     snake[1].x = min_pos + 2*step;
     snake[2].x = min_pos + step;
     snake[0].y = min_pos + step;
@@ -764,10 +780,21 @@ void game()
 
     dot tail;
 
-    bool end_game = 0, pause_game = 0;
+    bool end_game, pause_game;
 
-    bool first = 1, work = 1, dir_changed = 0;
+    bool first, work, dir_changed;
     int cnt = 0;
+
+    __asm
+    {
+        xor ah, ah
+        mov end_game, ah
+        mov pause_game, ah
+        mov dir_changed, ah
+        inc ah
+        mov first,ah
+        mov work, ah
+    }
 
    
     while (work)
@@ -886,8 +913,16 @@ void game()
 
                 if (snake[0].x == food_pos.x && snake[0].y == food_pos.y)
                 {
-                    eaten = true;
-                    score1 += 7;
+                    __asm
+                    {
+                        mov ah, eaten
+                        mov ah, 1
+                        mov eaten, ah
+
+                        mov eax, score1
+                        add eax, 7
+                        mov score1, eax
+                    }
                 }
 
                 if (snake[0].x == min_pos || snake[0].x == max_pos || snake[0].y == min_pos || snake[0].y == max_pos)
@@ -985,7 +1020,17 @@ void game_pvp()
 {
     int min_pos = 10;
     int step = 30;
-    int max_pos = 1400 - step - min_pos;
+    int max_pos;
+
+    __asm
+    {
+        mov eax, step
+        add eax, min_pos
+        mov ebx, 1400
+        sub ebx, eax
+        mov max_pos, ebx
+    }
+
     dot food_pos;
     bool eaten1 = 1, eaten2 = 1;
     score1 = 0;
@@ -993,6 +1038,7 @@ void game_pvp()
 
     RenderWindow window(VideoMode(1400, 1400), "Snake");
     window.setPosition(Vector2i(650, 100));
+    window.setFramerateLimit(60);
 
     Texture head1UPTexture;
     head1UPTexture.loadFromFile("Pics\\Green_head_UP.png");
@@ -1098,10 +1144,24 @@ void game_pvp()
 
     dot tail1, tail2;
 
-    bool end_game = 0, pause_game = 0;
+    bool end_game, pause_game;
 
-    bool first1 = 1, first2 = 1, work = 1, dir1_changed = 0, dir2_changed = 0;
+    bool first1, first2, work, dir1_changed, dir2_changed;
     int cnt = 0;
+
+    __asm
+    {
+        xor ah, ah
+        mov end_game, ah
+        mov pause_game, ah
+        mov dir1_changed, ah
+        mov dir2_changed, ah
+        inc ah
+        mov first1, ah
+        mov first2, ah
+        mov work, ah
+
+    }
 
     while (work)
     {
@@ -1288,14 +1348,30 @@ void game_pvp()
 
                 if (snake1[0].x == food_pos.x && snake1[0].y == food_pos.y)
                 {
-                    eaten1 = true;
-                    score1 += 7;
+                    __asm
+                    {
+                        mov ah, eaten1
+                        mov ah, 1
+                        mov eaten1, ah
+
+                        mov eax, score1
+                        add eax, 7
+                        mov score1, eax
+                    }
                 }
 
                 if (snake2[0].x == food_pos.x && snake2[0].y == food_pos.y)
                 {
-                    eaten2 = true;
-                    score2 += 7;
+                    __asm
+                    {
+                        mov ah, eaten2
+                        mov ah, 1
+                        mov eaten2, ah
+
+                        mov eax, score2
+                        add eax, 7
+                        mov score2, eax
+                    }
                 }
 
                 bool lose1 = false, lose2 = false;
@@ -1450,7 +1526,17 @@ void game_pve()
 {
     int min_pos = 10;
     int step = 30;
-    int max_pos = 1400 - step - min_pos;
+    int max_pos;
+
+    __asm
+    {
+        mov eax, step
+        add eax, min_pos
+        mov ebx, 1400
+        sub ebx, eax
+        mov max_pos, ebx
+    }
+
     dot food_pos;
     bool eaten1 = 1, eaten2 = 1;
     score1 = 0;
@@ -1458,6 +1544,7 @@ void game_pve()
 
     RenderWindow window(VideoMode(1400, 1400), "Snake");
     window.setPosition(Vector2i(650, 100));
+    window.setFramerateLimit(60);
 
     Texture head1UPTexture;
     head1UPTexture.loadFromFile("Pics\\Green_head_UP.png");
@@ -1563,10 +1650,24 @@ void game_pve()
 
     dot tail1, tail2;
 
-    bool end_game = 0, pause_game = 0;
+    bool end_game, pause_game;
 
-    bool first1 = 1, first2 = 1, work = 1, dir1_changed = 0, dir2_changed = 0;
+    bool first1, first2, work, dir1_changed, dir2_changed;
     int cnt = 0;
+
+    __asm
+    {
+        xor ah, ah
+        mov end_game, ah
+        mov pause_game, ah
+        mov dir1_changed, ah
+        mov dir2_changed, ah
+        inc ah
+        mov first1, ah
+        mov first2, ah
+        mov work, ah
+    }
+
 
     while (work)
     {
@@ -1609,8 +1710,12 @@ void game_pve()
                     snake1_item.push_back(snake1_item[snake1_len - 1]);
                     snake1_len++;
                 }
-                first1 = false;
-                eaten1 = false;
+                __asm
+                {
+                    xor ah, ah
+                    mov first1, ah
+                    mov eaten1, ah
+                }
             }
             if (eaten2)
             {
@@ -1634,8 +1739,12 @@ void game_pve()
                     snake2_item.push_back(snake2_item[snake2_len - 1]);
                     snake2_len++;
                 }
-                first2 = false;
-                eaten2 = false;
+                __asm
+                {
+                    xor ah, ah
+                    mov first2, ah
+                    mov eaten2, ah
+                }
             }
             food.setPosition(food_pos.x, food_pos.y);
 
@@ -1753,14 +1862,30 @@ void game_pve()
 
                 if (snake1[0].x == food_pos.x && snake1[0].y == food_pos.y)
                 {
-                    eaten1 = true;
-                    score1 += 7;
+                    __asm
+                    {
+                        mov ah, eaten1
+                        mov ah, 1
+                        mov eaten1, ah
+
+                        mov eax, score1
+                        add eax, 7
+                        mov score1, eax
+                    }
                 }
 
                 if (snake2[0].x == food_pos.x && snake2[0].y == food_pos.y)
                 {
-                    eaten2 = true;
-                    score2 += 7;
+                    __asm
+                    {
+                        mov ah, eaten2
+                        mov ah, 1
+                        mov eaten2, ah
+
+                        mov eax, score2
+                        add eax, 7
+                        mov score2, eax
+                    }
                 }
 
                 bool lose1 = false, lose2 = false;
@@ -2237,6 +2362,7 @@ void you_lose(fails f)
 {
     RenderWindow window(sf::VideoMode(800, 400), "Snake");
     window.setPosition(Vector2i(950, 400));
+    window.setFramerateLimit(60);
 
     window.clear(sf::Color::White);
 
@@ -2247,7 +2373,7 @@ void you_lose(fails f)
 
     Text text("", font, 60);
     text.setColor(Color::Black);
-    text.setPosition(400, 400);
+    text.setPosition(400, 600);
     text.setScale(1, 2);
 
     if (f == LOSE)
@@ -2260,7 +2386,7 @@ void you_lose(fails f)
     if (f == WIN1)
     {
         text.setString(L"2 »√–Œ  œŒ¡≈ƒ»À!\n");
-        text.setPosition(350, 400);
+        text.setPosition(350, 600);
         rec.insert({ score1, player_name + "(green)"});
         rec.insert({ score2, player_name + "(red)" });
         ofstream fout("records.txt", ios::app);
@@ -2270,7 +2396,7 @@ void you_lose(fails f)
     if (f == WIN2)
     {
         text.setString(L"1 »√–Œ  œŒ¡≈ƒ»À!\n");
-        text.setPosition(350, 400);
+        text.setPosition(350, 600);
         rec.insert({ score1, player_name + "(green)" });
         rec.insert({ score2, player_name + "(red)" });
         ofstream fout("records.txt", ios::app);
