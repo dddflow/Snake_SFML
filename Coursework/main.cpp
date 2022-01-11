@@ -23,7 +23,7 @@ enum directions {UP, RIGHT, DOWN, LEFT};
 
 enum fails {LOSE, WIN, DRAW, WIN1, WIN2, DRAW1};
 
-enum diff {EASY = 99, MID = 66, HARD = 33};
+enum diff {EASY = 9, MID = 6, HARD = 3};
 
 void main_menu();
 void about();
