@@ -63,7 +63,6 @@ int main()
 	return 0;
 }
 
-//добавил, что мы крутые
 void main_menu()
 {
     RenderWindow window(sf::VideoMode(1400, 1400), "Snake");
@@ -749,7 +748,7 @@ void game()
     int snake_len = 3;
     vector <dot> snake(snake_len);
    
-    snake[0].x = min_pos + 3*step;
+    snake[0].x = min_pos + 3 * step;
     snake[1].x = min_pos + 2*step;
     snake[2].x = min_pos + step;
     snake[0].y = min_pos + step;
@@ -886,8 +885,16 @@ void game()
 
                 if (snake[0].x == food_pos.x && snake[0].y == food_pos.y)
                 {
-                    eaten = true;
-                    score1 += 7;
+                    __asm
+                    {
+                        mov ah, eaten
+                        mov ah, 1
+                        mov eaten, ah
+
+                        mov eax, score1
+                        add eax, 7
+                        mov score1, eax
+                    }
                 }
 
                 if (snake[0].x == min_pos || snake[0].x == max_pos || snake[0].y == min_pos || snake[0].y == max_pos)
