@@ -1502,7 +1502,17 @@ void game_pve()
 {
     int min_pos = 10;
     int step = 30;
-    int max_pos = 1400 - step - min_pos;
+    int max_pos;
+
+    __asm
+    {
+        mov eax, step
+        add eax, min_pos
+        mov ebx, 1400
+        sub ebx, eax
+        mov max_pos, ebx
+    }
+
     dot food_pos;
     bool eaten1 = 1, eaten2 = 1;
     score1 = 0;
@@ -1615,10 +1625,24 @@ void game_pve()
 
     dot tail1, tail2;
 
-    bool end_game = 0, pause_game = 0;
+    bool end_game, pause_game;
 
-    bool first1 = 1, first2 = 1, work = 1, dir1_changed = 0, dir2_changed = 0;
+    bool first1, first2, work, dir1_changed, dir2_changed;
     int cnt = 0;
+
+    __asm
+    {
+        xor ah, ah
+        mov end_game, ah
+        mov pause_game, ah
+        mov dir1_changed, ah
+        mov dir2_changed, ah
+        inc ah
+        mov first1, ah
+        mov first2, ah
+        mov work, ah
+    }
+
 
     while (work)
     {
@@ -1661,8 +1685,12 @@ void game_pve()
                     snake1_item.push_back(snake1_item[snake1_len - 1]);
                     snake1_len++;
                 }
-                first1 = false;
-                eaten1 = false;
+                __asm
+                {
+                    xor ah, ah
+                    mov first1, ah
+                    mov first2, ah
+                }
             }
             if (eaten2)
             {
@@ -1686,8 +1714,12 @@ void game_pve()
                     snake2_item.push_back(snake2_item[snake2_len - 1]);
                     snake2_len++;
                 }
-                first2 = false;
-                eaten2 = false;
+                __asm
+                {
+                    xor ah, ah
+                    mov first2, ah
+                    mov eaten2, ah
+                }
             }
             food.setPosition(food_pos.x, food_pos.y);
 
