@@ -750,7 +750,7 @@ void game()
     pauseTexture.loadFromFile("Pics\\Pause.png");
     Sprite pauseButton(pauseTexture);
     pauseButton.setScale(0.05, 0.05);
-    pauseButton.setPosition(max_pos - 2*step, min_pos + 1.5*step);
+    pauseButton.setPosition(max_pos - (step << 1), min_pos + 1.5*step);
 
     Font font;
     assert(font.loadFromFile("Fonts\\Segoe Print\\segoeprint.ttf"));
@@ -766,7 +766,7 @@ void game()
     vector <dot> snake(snake_len);
    
     snake[0].x = min_pos + 3 * step;
-    snake[1].x = min_pos + 2*step;
+    snake[1].x = min_pos + (step << 1);
     snake[2].x = min_pos + step;
     snake[0].y = min_pos + step;
     snake[1].y = min_pos + step;
