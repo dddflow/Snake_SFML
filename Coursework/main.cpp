@@ -472,16 +472,18 @@ void records()
 
 
     Text text[2][10];
+    int pos_y = 150;
     for (int i = 0; i < 10; i++)
     {
         text[0][i].setFont(font);
         text[1][i].setFont(font);
         text[0][i].setCharacterSize(40);
         text[1][i].setCharacterSize(40);
-        text[0][i].setPosition(200, 50 + 100 * (i + 1));
-        text[1][i].setPosition(1000, 50 + 100 * (i + 1));
+        text[0][i].setPosition(200, pos_y);
+        text[1][i].setPosition(1000, pos_y);
         text[0][i].setColor(Color::Black);
         text[1][i].setColor(Color::Black);
+        pos_y += 100;
     }
 
     int cnt = 0;
@@ -750,7 +752,7 @@ void game()
     pauseTexture.loadFromFile("Pics\\Pause.png");
     Sprite pauseButton(pauseTexture);
     pauseButton.setScale(0.05, 0.05);
-    pauseButton.setPosition(max_pos - 2*step, min_pos + 1.5*step);
+    pauseButton.setPosition(max_pos - (step << 1), min_pos + 1.5*step);
 
     Font font;
     assert(font.loadFromFile("Fonts\\Segoe Print\\segoeprint.ttf"));
@@ -766,7 +768,7 @@ void game()
     vector <dot> snake(snake_len);
    
     snake[0].x = min_pos + 3 * step;
-    snake[1].x = min_pos + 2*step;
+    snake[1].x = min_pos + (step << 1);
     snake[2].x = min_pos + step;
     snake[0].y = min_pos + step;
     snake[1].y = min_pos + step;
@@ -803,9 +805,9 @@ void game()
         {
             window.clear(Color::White);
 
-            for (int i = 1; i < snake_len; i++)
+            for (int i = 1; i < snake_len; i+=1)
             {
-                snake_item[i].setRadius(step / 2);
+                snake_item[i].setRadius((step >> 1));
                 snake_item[i].setPosition(snake[i].x, snake[i].y);
                 snake_item[i].setFillColor(Color::Green);
             }
@@ -815,10 +817,11 @@ void game()
                 srand(time(0));
                 
                 bool find = true;
+                int food_position = (max_pos - min_pos) / step - 2;
                 while (find)
                 {
-                    food_pos.x = (rand() % ((max_pos - min_pos) / step - 2)) * step + min_pos + step;
-                    food_pos.y = (rand() % ((max_pos - min_pos) / step - 2)) * step + min_pos + step;
+                    food_pos.x = (rand() % food_position) * step + min_pos + step;
+                    food_pos.y = (rand() % food_position) * step + min_pos + step;
 
                     find = false;
                     for (int i = 0; i < snake_len; i++)
@@ -837,33 +840,29 @@ void game()
             }
             food.setPosition(food_pos.x, food_pos.y);
 
-            for (int i = min_pos; i <= max_pos; i += step)
+            RectangleShape border(Vector2f(step, step));
+            border.setFillColor(Color::Black);
+
+            for (int i = min_pos; i <= max_pos-step; i += 2*step)
             {
-                RectangleShape border(Vector2f(step, step));
                 border.setPosition(i, min_pos);
-                border.setFillColor(Color::Black);
+                window.draw(border);
+                border.setPosition(i+step, min_pos);
                 window.draw(border);
 
-            }
-            for (int i = min_pos; i <= max_pos; i += step)
-            {
-                RectangleShape border(Vector2f(step, step));
                 border.setPosition(i, max_pos);
-                border.setFillColor(Color::Black);
                 window.draw(border);
-            }
-            for (int i = min_pos; i <= max_pos; i += step)
-            {
-                RectangleShape border(Vector2f(step, step));
+                border.setPosition(i+step, max_pos);
+                window.draw(border);
+
                 border.setPosition(min_pos, i);
-                border.setFillColor(Color::Black);
                 window.draw(border);
-            }
-            for (int i = min_pos; i <= max_pos; i += step)
-            {
-                RectangleShape border(Vector2f(step, step));
+                border.setPosition(min_pos, i+step);
+                window.draw(border);
+
                 border.setPosition(max_pos, i);
-                border.setFillColor(Color::Black);
+                window.draw(border);
+                border.setPosition(max_pos, i+step);
                 window.draw(border);
             }
 
@@ -1101,7 +1100,7 @@ void game_pvp()
     pauseTexture.loadFromFile("Pics\\Pause.png");
     Sprite pauseButton(pauseTexture);
     pauseButton.setScale(0.05, 0.05);
-    pauseButton.setPosition(max_pos - 2 * step, min_pos + 1.5 * step);
+    pauseButton.setPosition(max_pos - (step << 1), min_pos + 1.5 * step);
 
     Font font;
     assert(font.loadFromFile("Fonts\\Segoe Print\\segoeprint.ttf"));
@@ -1118,7 +1117,7 @@ void game_pvp()
     int snake1_len = 3;
     vector <dot> snake1(snake1_len);
     snake1[0].x = min_pos + 3 * step;
-    snake1[1].x = min_pos + 2 * step;
+    snake1[1].x = min_pos + (step << 1);
     snake1[2].x = min_pos + step;
     snake1[0].y = min_pos + step;
     snake1[1].y = min_pos + step;
@@ -1127,7 +1126,7 @@ void game_pvp()
     int snake2_len = 3;
     vector <dot> snake2(snake2_len);
     snake2[0].x = min_pos + 3 * step;
-    snake2[1].x = min_pos + 2 * step;
+    snake2[1].x = min_pos + (step << 1);
     snake2[2].x = min_pos + step;
     snake2[0].y = max_pos - step;
     snake2[1].y = max_pos - step;
@@ -1171,13 +1170,13 @@ void game_pvp()
 
             for (int i = 1; i < snake1_len; i++)
             {
-                snake1_item[i].setRadius(step / 2);
+                snake1_item[i].setRadius((step>>1));
                 snake1_item[i].setPosition(snake1[i].x, snake1[i].y);
                 snake1_item[i].setFillColor(Color::Green);
             }
             for (int i = 1; i < snake2_len; i++)
             {
-                snake2_item[i].setRadius(step / 2);
+                snake2_item[i].setRadius((step>> 1));
                 snake2_item[i].setPosition(snake2[i].x, snake2[i].y);
                 snake2_item[i].setFillColor(Color::Red);
             }
@@ -1187,10 +1186,11 @@ void game_pvp()
                 srand(time(0));
 
                 bool find = true;
+                int position_food = (max_pos - min_pos) / step - 2;
                 while (find)
                 {
-                    food_pos.x = (rand() % ((max_pos - min_pos) / step - 2)) * step + min_pos + step;
-                    food_pos.y = (rand() % ((max_pos - min_pos) / step - 2)) * step + min_pos + step;
+                    food_pos.x = (rand() % position_food) * step + min_pos + step;
+                    food_pos.y = (rand() % position_food) * step + min_pos + step;
 
                     find = false;
                     for (int i = 0; i < snake1_len; i++)
@@ -1212,10 +1212,11 @@ void game_pvp()
                 srand(time(0));
 
                 bool find = true;
+                int position_food = (max_pos - min_pos) / step - 2;
                 while (find)
                 {
-                    food_pos.x = (rand() % ((max_pos - min_pos) / step - 2)) * step + min_pos + step;
-                    food_pos.y = (rand() % ((max_pos - min_pos) / step - 2)) * step + min_pos + step;
+                    food_pos.x = (rand() % position_food) * step + min_pos + step;
+                    food_pos.y = (rand() % position_food) * step + min_pos + step;
 
                     find = false;
                     for (int i = 0; i < snake1_len; i++) 
@@ -1234,32 +1235,29 @@ void game_pvp()
             }
             food.setPosition(food_pos.x, food_pos.y);
 
-            for (int i = min_pos; i <= max_pos; i += step)
+            RectangleShape border(Vector2f(step, step));
+            border.setFillColor(Color::Black);
+
+            for (int i = min_pos; i <= max_pos - step; i += (step << 1))
             {
-                RectangleShape border(Vector2f(step, step));
                 border.setPosition(i, min_pos);
-                border.setFillColor(Color::Black);
                 window.draw(border);
-            }
-            for (int i = min_pos; i <= max_pos; i += step)
-            {
-                RectangleShape border(Vector2f(step, step));
+                border.setPosition(i+step, min_pos);
+                window.draw(border);
+
                 border.setPosition(i, max_pos);
-                border.setFillColor(Color::Black);
                 window.draw(border);
-            }
-            for (int i = min_pos; i <= max_pos; i += step)
-            {
-                RectangleShape border(Vector2f(step, step));
+                border.setPosition(i+step, max_pos);
+                window.draw(border);
+
                 border.setPosition(min_pos, i);
-                border.setFillColor(Color::Black);
                 window.draw(border);
-            }
-            for (int i = min_pos; i <= max_pos; i += step)
-            {
-                RectangleShape border(Vector2f(step, step));
+                border.setPosition(min_pos, i+step);
+                window.draw(border);
+
                 border.setPosition(max_pos, i);
-                border.setFillColor(Color::Black);
+                window.draw(border);
+                border.setPosition(max_pos, i+step);
                 window.draw(border);
             }
 
@@ -1607,7 +1605,7 @@ void game_pve()
     pauseTexture.loadFromFile("Pics\\Pause.png");
     Sprite pauseButton(pauseTexture);
     pauseButton.setScale(0.05, 0.05);
-    pauseButton.setPosition(max_pos - 2 * step, min_pos + 1.5 * step);
+    pauseButton.setPosition(max_pos - (step << 1), min_pos + 1.5 * step);
 
     Font font;
     assert(font.loadFromFile("Fonts\\Segoe Print\\segoeprint.ttf"));
@@ -1624,7 +1622,7 @@ void game_pve()
     int snake1_len = 3;
     vector <dot> snake1(snake1_len);
     snake1[0].x = min_pos + 3 * step;
-    snake1[1].x = min_pos + 2 * step;
+    snake1[1].x = min_pos + (step << 1);
     snake1[2].x = min_pos + step;
     snake1[0].y = min_pos + step;
     snake1[1].y = min_pos + step;
@@ -1633,7 +1631,7 @@ void game_pve()
     int snake2_len = 3;
     vector <dot> snake2(snake2_len);
     snake2[0].x = min_pos + 3 * step;
-    snake2[1].x = min_pos + 2 * step;
+    snake2[1].x = min_pos + (step << 1);
     snake2[2].x = min_pos + step;
     snake2[0].y = max_pos - step;
     snake2[1].y = max_pos - step;
@@ -1693,10 +1691,11 @@ void game_pve()
                 srand(time(0));
 
                 bool find = true;
+                int position_food = (max_pos - min_pos) / step - 2;
                 while (find)
                 {
-                    food_pos.x = (rand() % ((max_pos - min_pos) / step - 2)) * step + min_pos + step;
-                    food_pos.y = (rand() % ((max_pos - min_pos) / step - 2)) * step + min_pos + step;
+                    food_pos.x = (rand() % position_food) * step + min_pos + step;
+                    food_pos.y = (rand() % position_food) * step + min_pos + step;
 
                     find = false;
                     for (int i = 0; i < snake1_len; i++)
@@ -1722,10 +1721,11 @@ void game_pve()
                 srand(time(0));
 
                 bool find = true;
+                int position_food = (max_pos - min_pos) / step - 2;
                 while (find)
                 {
-                    food_pos.x = (rand() % ((max_pos - min_pos) / step - 2)) * step + min_pos + step;
-                    food_pos.y = (rand() % ((max_pos - min_pos) / step - 2)) * step + min_pos + step;
+                    food_pos.x = (rand() % position_food) * step + min_pos + step;
+                    food_pos.y = (rand() % position_food) * step + min_pos + step;
 
                     find = false;
                     for (int i = 0; i < snake1_len; i++)
@@ -1748,32 +1748,29 @@ void game_pve()
             }
             food.setPosition(food_pos.x, food_pos.y);
 
-            for (int i = min_pos; i <= max_pos; i += step)
+            RectangleShape border(Vector2f(step, step));
+            border.setFillColor(Color::Black);
+
+            for (int i = min_pos; i <= max_pos - step; i += (step << 1))
             {
-                RectangleShape border(Vector2f(step, step));
                 border.setPosition(i, min_pos);
-                border.setFillColor(Color::Black);
                 window.draw(border);
-            }
-            for (int i = min_pos; i <= max_pos; i += step)
-            {
-                RectangleShape border(Vector2f(step, step));
+                border.setPosition(i + step, min_pos);
+                window.draw(border);
+
                 border.setPosition(i, max_pos);
-                border.setFillColor(Color::Black);
                 window.draw(border);
-            }
-            for (int i = min_pos; i <= max_pos; i += step)
-            {
-                RectangleShape border(Vector2f(step, step));
+                border.setPosition(i + step, max_pos);
+                window.draw(border);
+
                 border.setPosition(min_pos, i);
-                border.setFillColor(Color::Black);
                 window.draw(border);
-            }
-            for (int i = min_pos; i <= max_pos; i += step)
-            {
-                RectangleShape border(Vector2f(step, step));
+                border.setPosition(min_pos, i + step);
+                window.draw(border);
+
                 border.setPosition(max_pos, i);
-                border.setFillColor(Color::Black);
+                window.draw(border);
+                border.setPosition(max_pos, i + step);
                 window.draw(border);
             }
 
@@ -1971,15 +1968,20 @@ void game_pve()
                 dir2_changed = 1;
             }
 
-            if ((snake2[0].x - step == min_pos || snake2[0].x + step == max_pos) && (direction2 == RIGHT || direction2 == LEFT))
+            int cmpY = snake2[0].y - step;
+            int cmpY1 = snake2[0].y + step;
+            int cmpX = snake2[0].x - step;
+            int cmpX1 = snake2[0].x + step;
+            if ((cmpX == min_pos || cmpX1 == max_pos) && (direction2 == RIGHT || direction2 == LEFT))
             {
-                if (snake2[0].y - step != min_pos)
+                if (cmpY != min_pos)
                 {
                     bool temp = true;
+
                     for (int i = 0; i < snake1_len; i++)
-                        if (snake2[0].x == snake1[i].x && snake2[0].y - step == snake1[i].y) temp = false;
+                        if (snake2[0].x == snake1[i].x && cmpY == snake1[i].y) temp = false;
                     for (int i = 1; i < snake2_len; i++)
-                        if (snake2[0].x == snake2[i].x && snake2[0].y - step == snake2[i].y) temp = false;
+                        if (snake2[0].x == snake2[i].x && cmpY == snake2[i].y) temp = false;
                     if (temp)
                     {
                         direction2 = UP;
@@ -1987,13 +1989,14 @@ void game_pve()
                         dir2_changed = 1;
                     }
                 }
-                else if (snake2[0].y + step != max_pos)
+                else if (cmpY1 != max_pos)
                 {
                     bool temp = true;
+
                     for (int i = 0; i < snake1_len; i++)
-                        if (snake2[0].x == snake1[i].x && snake2[0].y + step == snake1[i].y) temp = false;
+                        if (snake2[0].x == snake1[i].x && cmpY1 == snake1[i].y) temp = false;
                     for (int i = 1; i < snake2_len; i++)
-                        if (snake2[0].x == snake2[i].x && snake2[0].y + step == snake2[i].y) temp = false;
+                        if (snake2[0].x == snake2[i].x && cmpY1 == snake2[i].y) temp = false;
                     if (temp)
                     {
                         direction2 = DOWN;
@@ -2002,15 +2005,15 @@ void game_pve()
                     }
                 }
             }
-            else if ((snake2[0].y - step == min_pos || snake2[0].y + step == max_pos) && (direction2 == UP || direction2 == DOWN))
+            else if ((cmpY == min_pos || cmpY1 == max_pos) && (direction2 == UP || direction2 == DOWN))
             {
-                if (snake2[0].x - step != min_pos)
+                if (cmpX != min_pos)
                 {
                     bool temp = true;
                     for (int i = 0; i < snake1_len; i++)
-                        if (snake2[0].x - step == snake1[i].x && snake2[0].y == snake1[i].y) temp = false;
+                        if (cmpX == snake1[i].x && snake2[0].y == snake1[i].y) temp = false;
                     for (int i = 1; i < snake2_len; i++)
-                        if (snake2[0].x - step == snake1[i].x && snake2[0].y == snake1[i].y) temp = false;
+                        if (cmpX == snake1[i].x && snake2[0].y == snake1[i].y) temp = false;
                     if (temp)
                     {
                         direction2 = LEFT;
@@ -2018,13 +2021,13 @@ void game_pve()
                         dir2_changed = 1;
                     }
                 }
-                else if (snake2[0].x + step != max_pos)
+                else if (cmpX1 != max_pos)
                 {
                     bool temp = true;
                     for (int i = 0; i < snake1_len; i++)
-                        if (snake2[0].x + step == snake1[i].x && snake2[0].y == snake1[i].y) temp = false;
+                        if (cmpX1 == snake1[i].x && snake2[0].y == snake1[i].y) temp = false;
                     for (int i = 1; i < snake2_len; i++)
-                        if (snake2[0].x + step == snake2[i].x && snake2[0].y == snake2[i].y) temp = false;
+                        if (cmpX1 == snake2[i].x && snake2[0].y == snake2[i].y) temp = false;
                     if (temp)
                     {
                         direction2 = RIGHT;
@@ -2035,15 +2038,15 @@ void game_pve()
             }
 
             for (int i = 1; i < snake2_len; i++)
-                if (snake2[0].x + step == snake2[i].x && snake2[0].y == snake2[i].y && direction2 == RIGHT)
+                if (cmpX1 == snake2[i].x && snake2[0].y == snake2[i].y && direction2 == RIGHT)
                 {
-                    if (snake2[0].y - step != min_pos)
+                    if (cmpY != min_pos)
                     {
                         bool temp = true;
                         for (int i = 0; i < snake1_len; i++)
-                            if (snake2[0].x == snake1[i].x && snake2[0].y - step == snake1[i].y) temp = false;
+                            if (snake2[0].x == snake1[i].x && cmpY == snake1[i].y) temp = false;
                         for (int i = 1; i < snake2_len; i++)
-                            if (snake2[0].x == snake2[i].x && snake2[0].y - step == snake2[i].y) temp = false;
+                            if (snake2[0].x == snake2[i].x && cmpY == snake2[i].y) temp = false;
                         if (temp)
                         {
                             direction2 = UP;
@@ -2051,13 +2054,13 @@ void game_pve()
                             dir2_changed = 1;
                         }
                     }
-                    else if (snake2[0].y + step != max_pos)
+                    else if (cmpY1 != max_pos)
                     {
                         bool temp = true;
                         for (int i = 0; i < snake1_len; i++)
-                            if (snake2[0].x == snake1[i].x && snake2[0].y + step == snake1[i].y) temp = false;
+                            if (snake2[0].x == snake1[i].x && cmpY1 == snake1[i].y) temp = false;
                         for (int i = 1; i < snake2_len; i++)
-                            if (snake2[0].x == snake2[i].x && snake2[0].y + step == snake2[i].y) temp = false;
+                            if (snake2[0].x == snake2[i].x && cmpY1 == snake2[i].y) temp = false;
                         if (temp)
                         {
                             direction2 = DOWN;
@@ -2067,15 +2070,15 @@ void game_pve()
                     }
                 }
             for (int i = 1; i < snake2_len; i++)
-                if (snake2[0].x - step == snake2[i].x && snake2[0].y == snake2[i].y && direction2 == LEFT)
+                if (cmpX == snake2[i].x && snake2[0].y == snake2[i].y && direction2 == LEFT)
                 {
-                    if (snake2[0].y - step != min_pos)
+                    if (cmpY != min_pos)
                     {
                         bool temp = true;
                         for (int i = 0; i < snake1_len; i++)
-                            if (snake2[0].x == snake1[i].x && snake2[0].y - step == snake1[i].y) temp = false;
+                            if (snake2[0].x == snake1[i].x && cmpY == snake1[i].y) temp = false;
                         for (int i = 1; i < snake2_len; i++)
-                            if (snake2[0].x == snake2[i].x && snake2[0].y - step == snake2[i].y) temp = false;
+                            if (snake2[0].x == snake2[i].x && cmpY == snake2[i].y) temp = false;
                         if (temp)
                         {
                             direction2 = UP;
@@ -2083,13 +2086,13 @@ void game_pve()
                             dir2_changed = 1;
                         }
                     }
-                    else if (snake2[0].y + step != max_pos)
+                    else if (cmpY1 != max_pos)
                     {
                         bool temp = true;
                         for (int i = 0; i < snake1_len; i++)
-                            if (snake2[0].x == snake1[i].x && snake2[0].y + step == snake1[i].y) temp = false;
+                            if (snake2[0].x == snake1[i].x && cmpY1 == snake1[i].y) temp = false;
                         for (int i = 1; i < snake2_len; i++)
-                            if (snake2[0].x == snake2[i].x && snake2[0].y + step == snake2[i].y) temp = false;
+                            if (snake2[0].x == snake2[i].x && cmpY1 == snake2[i].y) temp = false;
                         if (temp)
                         {
                             direction2 = DOWN;
@@ -2099,15 +2102,15 @@ void game_pve()
                     }
                 }
             for (int i = 1; i < snake2_len; i++)
-                if (snake2[0].x == snake2[i].x && snake2[0].y - step == snake2[i].y && direction2 == UP)
+                if (snake2[0].x == snake2[i].x && cmpY == snake2[i].y && direction2 == UP)
                 {
-                    if (snake2[0].x - step != min_pos)
+                    if (cmpX != min_pos)
                     {
                         bool temp = true;
                         for (int i = 0; i < snake1_len; i++)
-                            if (snake2[0].x - step == snake1[i].x && snake2[0].y == snake1[i].y) temp = false;
+                            if (cmpX == snake1[i].x && snake2[0].y == snake1[i].y) temp = false;
                         for (int i = 1; i < snake2_len; i++)
-                            if (snake2[0].x - step == snake2[i].x && snake2[0].y == snake2[i].y) temp = false;
+                            if (cmpX == snake2[i].x && snake2[0].y == snake2[i].y) temp = false;
                         if (temp && direction2 != RIGHT)
                         {
                             direction2 = LEFT;
@@ -2115,13 +2118,13 @@ void game_pve()
                             dir2_changed = 1;
                         }
                     }
-                    else if (snake2[0].x + step != max_pos)
+                    else if (cmpX1 != max_pos)
                     {
                         bool temp = true;
                         for (int i = 0; i < snake1_len; i++)
-                            if (snake2[0].x + step == snake1[i].x && snake2[0].y == snake1[i].y) temp = false;
+                            if (cmpX1 == snake1[i].x && snake2[0].y == snake1[i].y) temp = false;
                         for (int i = 1; i < snake2_len; i++)
-                            if (snake2[0].x + step == snake2[i].x && snake2[0].y == snake2[i].y) temp = false;
+                            if (cmpX1 == snake2[i].x && snake2[0].y == snake2[i].y) temp = false;
                         if (temp && direction2 != LEFT)
                         {
                             direction2 = RIGHT;
@@ -2131,15 +2134,15 @@ void game_pve()
                     }
                 }
             for (int i = 1; i < snake2_len; i++)
-                if (snake2[0].x == snake2[i].x && snake2[0].y + step == snake2[i].y && direction2 == DOWN)
+                if (snake2[0].x == snake2[i].x && cmpY1 == snake2[i].y && direction2 == DOWN)
                 {
-                    if (snake2[0].x - step != min_pos)
+                    if (cmpX != min_pos)
                     {
                         bool temp = true;
                         for (int i = 0; i < snake1_len; i++)
-                            if (snake2[0].x - step == snake1[i].x && snake2[0].y == snake1[i].y) temp = false;
+                            if (cmpX == snake1[i].x && snake2[0].y == snake1[i].y) temp = false;
                         for (int i = 1; i < snake2_len; i++)
-                            if (snake2[0].x - step == snake2[i].x && snake2[0].y == snake2[i].y) temp = false;
+                            if (cmpX == snake2[i].x && snake2[0].y == snake2[i].y) temp = false;
                         if (temp && direction2 != RIGHT)
                         {
                             direction2 = LEFT;
@@ -2147,13 +2150,13 @@ void game_pve()
                             dir2_changed = 1;
                         }
                     }
-                    else if (snake2[0].x + step != max_pos)
+                    else if (cmpX1 != max_pos)
                     {
                         bool temp = true;
                         for (int i = 0; i < snake1_len; i++)
-                            if (snake2[0].x + step == snake1[i].x && snake2[0].y == snake1[i].y) temp = false;
+                            if (cmpX1 == snake1[i].x && snake2[0].y == snake1[i].y) temp = false;
                         for (int i = 1; i < snake2_len; i++)
-                            if (snake2[0].x + step == snake2[i].x && snake2[0].y == snake2[i].y) temp = false;
+                            if (cmpX1 == snake2[i].x && snake2[0].y == snake2[i].y) temp = false;
                         if (temp && direction2 != LEFT)
                         {
                             direction2 = RIGHT;
@@ -2164,15 +2167,15 @@ void game_pve()
                 }
 
             for (int i = 0; i < snake1_len; i++)
-                if (snake2[0].x + step == snake1[i].x && snake2[0].y == snake1[i].y && direction2 == RIGHT)
+                if (cmpX1 == snake1[i].x && snake2[0].y == snake1[i].y && direction2 == RIGHT)
                 {
-                    if (snake2[0].y - step != min_pos)
+                    if (cmpY != min_pos)
                     {
                         bool temp = true;
                         for (int i = 0; i < snake1_len; i++)
-                            if (snake2[0].x == snake1[i].x && snake2[0].y - step == snake1[i].y) temp = false;
+                            if (snake2[0].x == snake1[i].x && cmpY == snake1[i].y) temp = false;
                         for (int i = 1; i < snake2_len; i++)
-                            if (snake2[0].x == snake2[i].x && snake2[0].y - step == snake2[i].y) temp = false;
+                            if (snake2[0].x == snake2[i].x && cmpY == snake2[i].y) temp = false;
                         if (temp)
                         {
                             direction2 = UP;
@@ -2180,13 +2183,13 @@ void game_pve()
                             dir2_changed = 1;
                         }
                     }
-                    else if (snake2[0].y + step != max_pos)
+                    else if (cmpY1 != max_pos)
                     {
                         bool temp = true;
                         for (int i = 0; i < snake1_len; i++)
-                            if (snake2[0].x == snake1[i].x && snake2[0].y + step == snake1[i].y) temp = false;
+                            if (snake2[0].x == snake1[i].x && cmpY1 == snake1[i].y) temp = false;
                         for (int i = 1; i < snake2_len; i++)
-                            if (snake2[0].x == snake2[i].x && snake2[0].y + step == snake2[i].y) temp = false;
+                            if (snake2[0].x == snake2[i].x && cmpY1 == snake2[i].y) temp = false;
                         if (temp)
                         {
                             direction2 = DOWN;
@@ -2196,15 +2199,15 @@ void game_pve()
                     }
                 }
             for (int i = 0; i < snake1_len; i++)
-                if (snake2[0].x - step == snake1[i].x && snake2[0].y == snake1[i].y && direction2 == LEFT)
+                if (cmpX == snake1[i].x && snake2[0].y == snake1[i].y && direction2 == LEFT)
                 {
-                    if (snake2[0].y - step != min_pos)
+                    if (cmpY != min_pos)
                     {
                         bool temp = true;
                         for (int i = 0; i < snake1_len; i++)
-                            if (snake2[0].x == snake1[i].x && snake2[0].y - step == snake1[i].y) temp = false;
+                            if (snake2[0].x == snake1[i].x && cmpY == snake1[i].y) temp = false;
                         for (int i = 1; i < snake2_len; i++)
-                            if (snake2[0].x == snake2[i].x && snake2[0].y - step == snake2[i].y) temp = false;
+                            if (snake2[0].x == snake2[i].x && cmpY == snake2[i].y) temp = false;
                         if (temp)
                         {
                             direction2 = UP;
@@ -2212,13 +2215,13 @@ void game_pve()
                             dir2_changed = 1;
                         }
                     }
-                    else if (snake2[0].y + step != max_pos)
+                    else if (cmpY1 != max_pos)
                     {
                         bool temp = true;
                         for (int i = 0; i < snake1_len; i++)
-                            if (snake2[0].x == snake1[i].x && snake2[0].y + step == snake1[i].y) temp = false;
+                            if (snake2[0].x == snake1[i].x && cmpY1 == snake1[i].y) temp = false;
                         for (int i = 1; i < snake2_len; i++)
-                            if (snake2[0].x == snake2[i].x && snake2[0].y + step == snake2[i].y) temp = false;
+                            if (snake2[0].x == snake2[i].x && cmpY1 == snake2[i].y) temp = false;
                         if (temp)
                         {
                             direction2 = DOWN;
@@ -2228,15 +2231,15 @@ void game_pve()
                     }
                 }
             for (int i = 0; i < snake1_len; i++)
-                if (snake2[0].x == snake1[i].x && snake2[0].y - step == snake1[i].y && direction2 == UP)
+                if (snake2[0].x == snake1[i].x && cmpY == snake1[i].y && direction2 == UP)
                 {
-                    if (snake2[0].x - step != min_pos)
+                    if (cmpX != min_pos)
                     {
                         bool temp = true;
                         for (int i = 0; i < snake1_len; i++)
-                            if (snake2[0].x - step == snake1[i].x && snake2[0].y == snake1[i].y) temp = false;
+                            if (cmpX == snake1[i].x && snake2[0].y == snake1[i].y) temp = false;
                         for (int i = 1; i < snake2_len; i++)
-                            if (snake2[0].x - step == snake2[i].x && snake2[0].y == snake2[i].y) temp = false;
+                            if (cmpX == snake2[i].x && snake2[0].y == snake2[i].y) temp = false;
                         if (temp && direction2 != RIGHT)
                         {
                             direction2 = LEFT;
@@ -2244,13 +2247,13 @@ void game_pve()
                             dir2_changed = 1;
                         }
                     }
-                    else if (snake2[0].x + step != max_pos)
+                    else if (cmpX1 != max_pos)
                     {
                         bool temp = true;
                         for (int i = 0; i < snake1_len; i++)
-                            if (snake2[0].x + step == snake1[i].x && snake2[0].y == snake1[i].y) temp = false;
+                            if (cmpX1 == snake1[i].x && snake2[0].y == snake1[i].y) temp = false;
                         for (int i = 1; i < snake2_len; i++)
-                            if (snake2[0].x + step == snake2[i].x && snake2[0].y == snake2[i].y) temp = false;
+                            if (cmpX1 == snake2[i].x && snake2[0].y == snake2[i].y) temp = false;
                         if (temp && direction2 != LEFT)
                         {
                             direction2 = RIGHT;
@@ -2260,15 +2263,15 @@ void game_pve()
                     }
                 }
             for (int i = 0; i < snake1_len; i++)
-                if (snake2[0].x == snake1[i].x && snake2[0].y + step == snake1[i].y && direction2 == DOWN)
+                if (snake2[0].x == snake1[i].x && cmpY1 == snake1[i].y && direction2 == DOWN)
                 {
-                    if (snake2[0].x - step != min_pos)
+                    if (cmpX != min_pos)
                     {
                         bool temp = true;
                         for (int i = 0; i < snake1_len; i++)
-                            if (snake2[0].x - step == snake1[i].x && snake2[0].y == snake1[i].y) temp = false;
+                            if (cmpX == snake1[i].x && snake2[0].y == snake1[i].y) temp = false;
                         for (int i = 1; i < snake2_len; i++)
-                            if (snake2[0].x - step == snake2[i].x && snake2[0].y == snake2[i].y) temp = false;
+                            if (cmpX == snake2[i].x && snake2[0].y == snake2[i].y) temp = false;
                         if (temp && direction2 != RIGHT)
                         {
                             direction2 = LEFT;
@@ -2276,13 +2279,13 @@ void game_pve()
                             dir2_changed = 1;
                         }
                     }
-                    else if (snake2[0].x + step != max_pos)
+                    else if (cmpX1 != max_pos)
                     {
                         bool temp = true;
                         for (int i = 0; i < snake1_len; i++)
-                            if (snake2[0].x + step == snake1[i].x && snake2[0].y == snake1[i].y) temp = false;
+                            if (cmpX1 == snake1[i].x && snake2[0].y == snake1[i].y) temp = false;
                         for (int i = 1; i < snake2_len; i++)
-                            if (snake2[0].x + step == snake2[i].x && snake2[0].y == snake2[i].y) temp = false;
+                            if (cmpX1 == snake2[i].x && snake2[0].y == snake2[i].y) temp = false;
                         if (temp && direction2 != LEFT)
                         {
                             direction2 = RIGHT;
@@ -2310,7 +2313,7 @@ void game_pve()
             }
 
             if (event.type == event.MouseButtonReleased && event.mouseButton.button == Mouse::Left && \
-                IntRect(max_pos - 2 * step, min_pos + 1.5 * step, 50, 50).contains(Mouse::getPosition(window)) || \
+                IntRect(max_pos - step << 1, min_pos + 1.5 * step, 50, 50).contains(Mouse::getPosition(window)) || \
                 event.type == Event::KeyReleased && event.key.code == Keyboard::P)
             {
                 if (pause_game)
