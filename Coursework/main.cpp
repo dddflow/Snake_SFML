@@ -472,18 +472,18 @@ void records()
 
 
     Text text[2][10];
-    int pos = 150;
+    int pos_y = 150;
     for (int i = 0; i < 10; i++)
     {
         text[0][i].setFont(font);
         text[1][i].setFont(font);
         text[0][i].setCharacterSize(40);
         text[1][i].setCharacterSize(40);
-        text[0][i].setPosition(200, pos);
-        text[1][i].setPosition(1000, pos);
+        text[0][i].setPosition(200, pos_y);
+        text[1][i].setPosition(1000, pos_y);
         text[0][i].setColor(Color::Black);
         text[1][i].setColor(Color::Black);
-        pos += 100;
+        pos_y += 100;
     }
 
     int cnt = 0;
