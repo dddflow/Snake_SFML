@@ -1691,10 +1691,11 @@ void game_pve()
                 srand(time(0));
 
                 bool find = true;
+                int position_food = (max_pos - min_pos) / step - 2;
                 while (find)
                 {
-                    food_pos.x = (rand() % ((max_pos - min_pos) / step - 2)) * step + min_pos + step;
-                    food_pos.y = (rand() % ((max_pos - min_pos) / step - 2)) * step + min_pos + step;
+                    food_pos.x = (rand() % position_food) * step + min_pos + step;
+                    food_pos.y = (rand() % position_food) * step + min_pos + step;
 
                     find = false;
                     for (int i = 0; i < snake1_len; i++)
@@ -1720,10 +1721,11 @@ void game_pve()
                 srand(time(0));
 
                 bool find = true;
+                int position_food = (max_pos - min_pos) / step - 2;
                 while (find)
                 {
-                    food_pos.x = (rand() % ((max_pos - min_pos) / step - 2)) * step + min_pos + step;
-                    food_pos.y = (rand() % ((max_pos - min_pos) / step - 2)) * step + min_pos + step;
+                    food_pos.x = (rand() % position_food) * step + min_pos + step;
+                    food_pos.y = (rand() % position_food) * step + min_pos + step;
 
                     find = false;
                     for (int i = 0; i < snake1_len; i++)
