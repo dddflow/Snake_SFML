@@ -1235,32 +1235,29 @@ void game_pvp()
             }
             food.setPosition(food_pos.x, food_pos.y);
 
-            for (int i = min_pos; i <= max_pos; i += step)
+            RectangleShape border(Vector2f(step, step));
+            border.setFillColor(Color::Black);
+
+            for (int i = min_pos; i <= max_pos - step; i += (step << 1))
             {
-                RectangleShape border(Vector2f(step, step));
                 border.setPosition(i, min_pos);
-                border.setFillColor(Color::Black);
                 window.draw(border);
-            }
-            for (int i = min_pos; i <= max_pos; i += step)
-            {
-                RectangleShape border(Vector2f(step, step));
+                border.setPosition(i+step, min_pos);
+                window.draw(border);
+
                 border.setPosition(i, max_pos);
-                border.setFillColor(Color::Black);
                 window.draw(border);
-            }
-            for (int i = min_pos; i <= max_pos; i += step)
-            {
-                RectangleShape border(Vector2f(step, step));
+                border.setPosition(i+step, max_pos);
+                window.draw(border);
+
                 border.setPosition(min_pos, i);
-                border.setFillColor(Color::Black);
                 window.draw(border);
-            }
-            for (int i = min_pos; i <= max_pos; i += step)
-            {
-                RectangleShape border(Vector2f(step, step));
+                border.setPosition(min_pos, i+step);
+                window.draw(border);
+
                 border.setPosition(max_pos, i);
-                border.setFillColor(Color::Black);
+                window.draw(border);
+                border.setPosition(max_pos, i+step);
                 window.draw(border);
             }
 
