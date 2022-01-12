@@ -23,7 +23,7 @@ enum directions {UP, RIGHT, DOWN, LEFT};
 
 enum fails {LOSE, WIN, DRAW, WIN1, WIN2, DRAW1};
 
-enum diff {EASY = 99, MID = 66, HARD = 33};
+enum diff {EASY = 9, MID = 6, HARD = 3};
 
 void main_menu();
 void about();
@@ -36,7 +36,7 @@ void game_pvp();
 void game_pve();
 void records();
 
-int score1, score2, m = MID;
+int score1, score2, m = EASY;
 string player_name;
 
 multiset <pair <int, string>, greater < pair <int, string >>> rec;
@@ -67,6 +67,7 @@ void main_menu()
 {
     RenderWindow window(sf::VideoMode(1400, 1400), "Snake");
     window.setPosition(Vector2i(650,100));
+    window.setFramerateLimit(60);
 
     Texture menuTexture[6];
     menuTexture[0].loadFromFile("Pics\\NewGame.png");
@@ -207,6 +208,7 @@ void game_menu()
 {
     RenderWindow window(sf::VideoMode(1400, 1400), "Snake");
     window.setPosition(Vector2i(650, 100));
+    window.setFramerateLimit(60);
 
     Texture menuTexture[4];
     menuTexture[0].loadFromFile("Pics\\1player.png");
@@ -314,6 +316,7 @@ void difficulty()
 {
     RenderWindow window(sf::VideoMode(1400, 1400), "Snake");
     window.setPosition(Vector2i(650, 100));
+    window.setFramerateLimit(60);
 
     Texture menuTexture[4];
     menuTexture[0].loadFromFile("Pics\\Easy.png");
@@ -440,6 +443,7 @@ void records()
 {
     RenderWindow window(sf::VideoMode(1400, 1400), "Snake");
     window.setPosition(Vector2i(650, 100));
+    window.setFramerateLimit(60);
 
     Texture headerTexture;
     headerTexture.loadFromFile("Pics\\Records.png");
@@ -537,6 +541,7 @@ void about()
 {
     RenderWindow window(sf::VideoMode(1400, 1400), "Snake");
     window.setPosition(Vector2i(650, 100));
+    window.setFramerateLimit(60);
     
     Texture headerTexture;
     headerTexture.loadFromFile("Pics\\About.png");
@@ -613,6 +618,7 @@ void faq()
 {
     RenderWindow window(sf::VideoMode(1400, 1400), "Snake");
     window.setPosition(Vector2i(650, 100));
+    window.setFramerateLimit(60);
 
     Texture headerTexture;
     headerTexture.loadFromFile("Pics\\About.png");
@@ -707,6 +713,7 @@ void game()
 
     RenderWindow window(VideoMode(1400, 1400), "Snake");
     window.setPosition(Vector2i(650, 100));
+    window.setFramerateLimit(60);
 
     Texture headUPTexture;
     headUPTexture.loadFromFile("Pics\\Green_head_UP.png");
@@ -1031,6 +1038,7 @@ void game_pvp()
 
     RenderWindow window(VideoMode(1400, 1400), "Snake");
     window.setPosition(Vector2i(650, 100));
+    window.setFramerateLimit(60);
 
     Texture head1UPTexture;
     head1UPTexture.loadFromFile("Pics\\Green_head_UP.png");
@@ -1536,6 +1544,7 @@ void game_pve()
 
     RenderWindow window(VideoMode(1400, 1400), "Snake");
     window.setPosition(Vector2i(650, 100));
+    window.setFramerateLimit(60);
 
     Texture head1UPTexture;
     head1UPTexture.loadFromFile("Pics\\Green_head_UP.png");
@@ -2353,6 +2362,7 @@ void you_lose(fails f)
 {
     RenderWindow window(sf::VideoMode(800, 400), "Snake");
     window.setPosition(Vector2i(950, 400));
+    window.setFramerateLimit(60);
 
     window.clear(sf::Color::White);
 
