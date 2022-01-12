@@ -1675,13 +1675,13 @@ void game_pve()
 
             for (int i = 1; i < snake1_len; i++)
             {
-                snake1_item[i].setRadius((step >> 2));
+                snake1_item[i].setRadius(step / 2);
                 snake1_item[i].setPosition(snake1[i].x, snake1[i].y);
                 snake1_item[i].setFillColor(Color::Green);
             }
             for (int i = 1; i < snake2_len; i++)
             {
-                snake2_item[i].setRadius((step >> 2));
+                snake2_item[i].setRadius(step / 2);
                 snake2_item[i].setPosition(snake2[i].x, snake2[i].y);
                 snake2_item[i].setFillColor(Color::Red);
             }
@@ -1748,32 +1748,29 @@ void game_pve()
             }
             food.setPosition(food_pos.x, food_pos.y);
 
-            for (int i = min_pos; i <= max_pos; i += step)
+            RectangleShape border(Vector2f(step, step));
+            border.setFillColor(Color::Black);
+
+            for (int i = min_pos; i <= max_pos - step; i += (step << 1))
             {
-                RectangleShape border(Vector2f(step, step));
                 border.setPosition(i, min_pos);
-                border.setFillColor(Color::Black);
                 window.draw(border);
-            }
-            for (int i = min_pos; i <= max_pos; i += step)
-            {
-                RectangleShape border(Vector2f(step, step));
+                border.setPosition(i + step, min_pos);
+                window.draw(border);
+
                 border.setPosition(i, max_pos);
-                border.setFillColor(Color::Black);
                 window.draw(border);
-            }
-            for (int i = min_pos; i <= max_pos; i += step)
-            {
-                RectangleShape border(Vector2f(step, step));
+                border.setPosition(i + step, max_pos);
+                window.draw(border);
+
                 border.setPosition(min_pos, i);
-                border.setFillColor(Color::Black);
                 window.draw(border);
-            }
-            for (int i = min_pos; i <= max_pos; i += step)
-            {
-                RectangleShape border(Vector2f(step, step));
+                border.setPosition(min_pos, i + step);
+                window.draw(border);
+
                 border.setPosition(max_pos, i);
-                border.setFillColor(Color::Black);
+                window.draw(border);
+                border.setPosition(max_pos, i + step);
                 window.draw(border);
             }
 
