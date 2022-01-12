@@ -128,3 +128,8 @@
 21 dadsa(green)
 7 dsadsa(green)
 0 dadasdas(green)
+0 נככה(green)
+0 adsa(green)
+0 adsa(red)
+0 dasdasdsa(green)
+0 dasdasdsa(red)

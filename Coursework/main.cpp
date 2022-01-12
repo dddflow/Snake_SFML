@@ -807,7 +807,7 @@ void game()
 
             for (int i = 1; i < snake_len; i+=1)
             {
-                snake_item[i].setRadius(step >> 1);
+                snake_item[i].setRadius((step >> 1));
                 snake_item[i].setPosition(snake[i].x, snake[i].y);
                 snake_item[i].setFillColor(Color::Green);
             }
@@ -1100,7 +1100,7 @@ void game_pvp()
     pauseTexture.loadFromFile("Pics\\Pause.png");
     Sprite pauseButton(pauseTexture);
     pauseButton.setScale(0.05, 0.05);
-    pauseButton.setPosition(max_pos - 2 * step, min_pos + 1.5 * step);
+    pauseButton.setPosition(max_pos - (step << 1), min_pos + 1.5 * step);
 
     Font font;
     assert(font.loadFromFile("Fonts\\Segoe Print\\segoeprint.ttf"));
@@ -1117,7 +1117,7 @@ void game_pvp()
     int snake1_len = 3;
     vector <dot> snake1(snake1_len);
     snake1[0].x = min_pos + 3 * step;
-    snake1[1].x = min_pos + 2 * step;
+    snake1[1].x = min_pos + (step << 1);
     snake1[2].x = min_pos + step;
     snake1[0].y = min_pos + step;
     snake1[1].y = min_pos + step;
@@ -1126,7 +1126,7 @@ void game_pvp()
     int snake2_len = 3;
     vector <dot> snake2(snake2_len);
     snake2[0].x = min_pos + 3 * step;
-    snake2[1].x = min_pos + 2 * step;
+    snake2[1].x = min_pos + (step << 1);
     snake2[2].x = min_pos + step;
     snake2[0].y = max_pos - step;
     snake2[1].y = max_pos - step;
@@ -1170,13 +1170,13 @@ void game_pvp()
 
             for (int i = 1; i < snake1_len; i++)
             {
-                snake1_item[i].setRadius(step / 2);
+                snake1_item[i].setRadius((step>>1));
                 snake1_item[i].setPosition(snake1[i].x, snake1[i].y);
                 snake1_item[i].setFillColor(Color::Green);
             }
             for (int i = 1; i < snake2_len; i++)
             {
-                snake2_item[i].setRadius(step / 2);
+                snake2_item[i].setRadius((step>> 1));
                 snake2_item[i].setPosition(snake2[i].x, snake2[i].y);
                 snake2_item[i].setFillColor(Color::Red);
             }
@@ -1186,10 +1186,11 @@ void game_pvp()
                 srand(time(0));
 
                 bool find = true;
+                int position_food = (max_pos - min_pos) / step - 2;
                 while (find)
                 {
-                    food_pos.x = (rand() % ((max_pos - min_pos) / step - 2)) * step + min_pos + step;
-                    food_pos.y = (rand() % ((max_pos - min_pos) / step - 2)) * step + min_pos + step;
+                    food_pos.x = (rand() % position_food) * step + min_pos + step;
+                    food_pos.y = (rand() % position_food) * step + min_pos + step;
 
                     find = false;
                     for (int i = 0; i < snake1_len; i++)
@@ -1211,10 +1212,11 @@ void game_pvp()
                 srand(time(0));
 
                 bool find = true;
+                int position_food = (max_pos - min_pos) / step - 2;
                 while (find)
                 {
-                    food_pos.x = (rand() % ((max_pos - min_pos) / step - 2)) * step + min_pos + step;
-                    food_pos.y = (rand() % ((max_pos - min_pos) / step - 2)) * step + min_pos + step;
+                    food_pos.x = (rand() % position_food) * step + min_pos + step;
+                    food_pos.y = (rand() % position_food) * step + min_pos + step;
 
                     find = false;
                     for (int i = 0; i < snake1_len; i++) 
