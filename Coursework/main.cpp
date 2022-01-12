@@ -472,16 +472,18 @@ void records()
 
 
     Text text[2][10];
+    int pos = 150;
     for (int i = 0; i < 10; i++)
     {
         text[0][i].setFont(font);
         text[1][i].setFont(font);
         text[0][i].setCharacterSize(40);
         text[1][i].setCharacterSize(40);
-        text[0][i].setPosition(200, 50 + 100 * (i + 1));
-        text[1][i].setPosition(1000, 50 + 100 * (i + 1));
+        text[0][i].setPosition(200, pos);
+        text[1][i].setPosition(1000, pos);
         text[0][i].setColor(Color::Black);
         text[1][i].setColor(Color::Black);
+        pos += 100;
     }
 
     int cnt = 0;
@@ -803,9 +805,9 @@ void game()
         {
             window.clear(Color::White);
 
-            for (int i = 1; i < snake_len; i++)
+            for (int i = 1; i < snake_len; i+=1)
             {
-                snake_item[i].setRadius(step / 2);
+                snake_item[i].setRadius(step >> 1);
                 snake_item[i].setPosition(snake[i].x, snake[i].y);
                 snake_item[i].setFillColor(Color::Green);
             }
@@ -815,10 +817,11 @@ void game()
                 srand(time(0));
                 
                 bool find = true;
+                int food_position = (max_pos - min_pos) / step - 2;
                 while (find)
                 {
-                    food_pos.x = (rand() % ((max_pos - min_pos) / step - 2)) * step + min_pos + step;
-                    food_pos.y = (rand() % ((max_pos - min_pos) / step - 2)) * step + min_pos + step;
+                    food_pos.x = (rand() % food_position) * step + min_pos + step;
+                    food_pos.y = (rand() % food_position) * step + min_pos + step;
 
                     find = false;
                     for (int i = 0; i < snake_len; i++)
@@ -837,33 +840,29 @@ void game()
             }
             food.setPosition(food_pos.x, food_pos.y);
 
-            for (int i = min_pos; i <= max_pos; i += step)
+            RectangleShape border(Vector2f(step, step));
+            border.setFillColor(Color::Black);
+
+            for (int i = min_pos; i <= max_pos-step; i += 2*step)
             {
-                RectangleShape border(Vector2f(step, step));
                 border.setPosition(i, min_pos);
-                border.setFillColor(Color::Black);
+                window.draw(border);
+                border.setPosition(i+step, min_pos);
                 window.draw(border);
 
-            }
-            for (int i = min_pos; i <= max_pos; i += step)
-            {
-                RectangleShape border(Vector2f(step, step));
                 border.setPosition(i, max_pos);
-                border.setFillColor(Color::Black);
                 window.draw(border);
-            }
-            for (int i = min_pos; i <= max_pos; i += step)
-            {
-                RectangleShape border(Vector2f(step, step));
+                border.setPosition(i+step, max_pos);
+                window.draw(border);
+
                 border.setPosition(min_pos, i);
-                border.setFillColor(Color::Black);
                 window.draw(border);
-            }
-            for (int i = min_pos; i <= max_pos; i += step)
-            {
-                RectangleShape border(Vector2f(step, step));
+                border.setPosition(min_pos, i+step);
+                window.draw(border);
+
                 border.setPosition(max_pos, i);
-                border.setFillColor(Color::Black);
+                window.draw(border);
+                border.setPosition(max_pos, i+step);
                 window.draw(border);
             }
 
