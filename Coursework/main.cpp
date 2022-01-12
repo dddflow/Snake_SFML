@@ -1605,7 +1605,7 @@ void game_pve()
     pauseTexture.loadFromFile("Pics\\Pause.png");
     Sprite pauseButton(pauseTexture);
     pauseButton.setScale(0.05, 0.05);
-    pauseButton.setPosition(max_pos - 2 * step, min_pos + 1.5 * step);
+    pauseButton.setPosition(max_pos - (step << 1), min_pos + 1.5 * step);
 
     Font font;
     assert(font.loadFromFile("Fonts\\Segoe Print\\segoeprint.ttf"));
@@ -1622,7 +1622,7 @@ void game_pve()
     int snake1_len = 3;
     vector <dot> snake1(snake1_len);
     snake1[0].x = min_pos + 3 * step;
-    snake1[1].x = min_pos + 2 * step;
+    snake1[1].x = min_pos + (step << 1);
     snake1[2].x = min_pos + step;
     snake1[0].y = min_pos + step;
     snake1[1].y = min_pos + step;
@@ -1631,7 +1631,7 @@ void game_pve()
     int snake2_len = 3;
     vector <dot> snake2(snake2_len);
     snake2[0].x = min_pos + 3 * step;
-    snake2[1].x = min_pos + 2 * step;
+    snake2[1].x = min_pos + (step << 1);
     snake2[2].x = min_pos + step;
     snake2[0].y = max_pos - step;
     snake2[1].y = max_pos - step;
@@ -1675,13 +1675,13 @@ void game_pve()
 
             for (int i = 1; i < snake1_len; i++)
             {
-                snake1_item[i].setRadius(step / 2);
+                snake1_item[i].setRadius((step >> 2));
                 snake1_item[i].setPosition(snake1[i].x, snake1[i].y);
                 snake1_item[i].setFillColor(Color::Green);
             }
             for (int i = 1; i < snake2_len; i++)
             {
-                snake2_item[i].setRadius(step / 2);
+                snake2_item[i].setRadius((step >> 2));
                 snake2_item[i].setPosition(snake2[i].x, snake2[i].y);
                 snake2_item[i].setFillColor(Color::Red);
             }
