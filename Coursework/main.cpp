@@ -1968,15 +1968,20 @@ void game_pve()
                 dir2_changed = 1;
             }
 
-            if ((snake2[0].x - step == min_pos || snake2[0].x + step == max_pos) && (direction2 == RIGHT || direction2 == LEFT))
+            int cmpY = snake2[0].y - step;
+            int cmpY1 = snake2[0].y + step;
+            int cmpX = snake2[0].x - step;
+            int cmpX1 = snake2[0].x + step;
+            if ((cmpX == min_pos || cmpX1 == max_pos) && (direction2 == RIGHT || direction2 == LEFT))
             {
-                if (snake2[0].y - step != min_pos)
+                if (cmpY != min_pos)
                 {
                     bool temp = true;
+
                     for (int i = 0; i < snake1_len; i++)
-                        if (snake2[0].x == snake1[i].x && snake2[0].y - step == snake1[i].y) temp = false;
+                        if (snake2[0].x == snake1[i].x && cmpY == snake1[i].y) temp = false;
                     for (int i = 1; i < snake2_len; i++)
-                        if (snake2[0].x == snake2[i].x && snake2[0].y - step == snake2[i].y) temp = false;
+                        if (snake2[0].x == snake2[i].x && cmpY == snake2[i].y) temp = false;
                     if (temp)
                     {
                         direction2 = UP;
@@ -1984,13 +1989,14 @@ void game_pve()
                         dir2_changed = 1;
                     }
                 }
-                else if (snake2[0].y + step != max_pos)
+                else if (cmpY1 != max_pos)
                 {
                     bool temp = true;
+
                     for (int i = 0; i < snake1_len; i++)
-                        if (snake2[0].x == snake1[i].x && snake2[0].y + step == snake1[i].y) temp = false;
+                        if (snake2[0].x == snake1[i].x && cmpY1 == snake1[i].y) temp = false;
                     for (int i = 1; i < snake2_len; i++)
-                        if (snake2[0].x == snake2[i].x && snake2[0].y + step == snake2[i].y) temp = false;
+                        if (snake2[0].x == snake2[i].x && cmpY1 == snake2[i].y) temp = false;
                     if (temp)
                     {
                         direction2 = DOWN;
@@ -1999,15 +2005,15 @@ void game_pve()
                     }
                 }
             }
-            else if ((snake2[0].y - step == min_pos || snake2[0].y + step == max_pos) && (direction2 == UP || direction2 == DOWN))
+            else if ((cmpY == min_pos || cmpY1 == max_pos) && (direction2 == UP || direction2 == DOWN))
             {
-                if (snake2[0].x - step != min_pos)
+                if (cmpX != min_pos)
                 {
                     bool temp = true;
                     for (int i = 0; i < snake1_len; i++)
-                        if (snake2[0].x - step == snake1[i].x && snake2[0].y == snake1[i].y) temp = false;
+                        if (cmpX == snake1[i].x && snake2[0].y == snake1[i].y) temp = false;
                     for (int i = 1; i < snake2_len; i++)
-                        if (snake2[0].x - step == snake1[i].x && snake2[0].y == snake1[i].y) temp = false;
+                        if (cmpX == snake1[i].x && snake2[0].y == snake1[i].y) temp = false;
                     if (temp)
                     {
                         direction2 = LEFT;
@@ -2015,13 +2021,13 @@ void game_pve()
                         dir2_changed = 1;
                     }
                 }
-                else if (snake2[0].x + step != max_pos)
+                else if (cmpX1 != max_pos)
                 {
                     bool temp = true;
                     for (int i = 0; i < snake1_len; i++)
-                        if (snake2[0].x + step == snake1[i].x && snake2[0].y == snake1[i].y) temp = false;
+                        if (cmpX1 == snake1[i].x && snake2[0].y == snake1[i].y) temp = false;
                     for (int i = 1; i < snake2_len; i++)
-                        if (snake2[0].x + step == snake2[i].x && snake2[0].y == snake2[i].y) temp = false;
+                        if (cmpX1 == snake2[i].x && snake2[0].y == snake2[i].y) temp = false;
                     if (temp)
                     {
                         direction2 = RIGHT;
@@ -2032,15 +2038,15 @@ void game_pve()
             }
 
             for (int i = 1; i < snake2_len; i++)
-                if (snake2[0].x + step == snake2[i].x && snake2[0].y == snake2[i].y && direction2 == RIGHT)
+                if (cmpX1 == snake2[i].x && snake2[0].y == snake2[i].y && direction2 == RIGHT)
                 {
-                    if (snake2[0].y - step != min_pos)
+                    if (cmpY != min_pos)
                     {
                         bool temp = true;
                         for (int i = 0; i < snake1_len; i++)
-                            if (snake2[0].x == snake1[i].x && snake2[0].y - step == snake1[i].y) temp = false;
+                            if (snake2[0].x == snake1[i].x && cmpY == snake1[i].y) temp = false;
                         for (int i = 1; i < snake2_len; i++)
-                            if (snake2[0].x == snake2[i].x && snake2[0].y - step == snake2[i].y) temp = false;
+                            if (snake2[0].x == snake2[i].x && cmpY == snake2[i].y) temp = false;
                         if (temp)
                         {
                             direction2 = UP;
@@ -2048,13 +2054,13 @@ void game_pve()
                             dir2_changed = 1;
                         }
                     }
-                    else if (snake2[0].y + step != max_pos)
+                    else if (cmpY1 != max_pos)
                     {
                         bool temp = true;
                         for (int i = 0; i < snake1_len; i++)
-                            if (snake2[0].x == snake1[i].x && snake2[0].y + step == snake1[i].y) temp = false;
+                            if (snake2[0].x == snake1[i].x && cmpY1 == snake1[i].y) temp = false;
                         for (int i = 1; i < snake2_len; i++)
-                            if (snake2[0].x == snake2[i].x && snake2[0].y + step == snake2[i].y) temp = false;
+                            if (snake2[0].x == snake2[i].x && cmpY1 == snake2[i].y) temp = false;
                         if (temp)
                         {
                             direction2 = DOWN;
@@ -2064,15 +2070,15 @@ void game_pve()
                     }
                 }
             for (int i = 1; i < snake2_len; i++)
-                if (snake2[0].x - step == snake2[i].x && snake2[0].y == snake2[i].y && direction2 == LEFT)
+                if (cmpX == snake2[i].x && snake2[0].y == snake2[i].y && direction2 == LEFT)
                 {
-                    if (snake2[0].y - step != min_pos)
+                    if (cmpY != min_pos)
                     {
                         bool temp = true;
                         for (int i = 0; i < snake1_len; i++)
-                            if (snake2[0].x == snake1[i].x && snake2[0].y - step == snake1[i].y) temp = false;
+                            if (snake2[0].x == snake1[i].x && cmpY == snake1[i].y) temp = false;
                         for (int i = 1; i < snake2_len; i++)
-                            if (snake2[0].x == snake2[i].x && snake2[0].y - step == snake2[i].y) temp = false;
+                            if (snake2[0].x == snake2[i].x && cmpY == snake2[i].y) temp = false;
                         if (temp)
                         {
                             direction2 = UP;
@@ -2080,13 +2086,13 @@ void game_pve()
                             dir2_changed = 1;
                         }
                     }
-                    else if (snake2[0].y + step != max_pos)
+                    else if (cmpY1 != max_pos)
                     {
                         bool temp = true;
                         for (int i = 0; i < snake1_len; i++)
-                            if (snake2[0].x == snake1[i].x && snake2[0].y + step == snake1[i].y) temp = false;
+                            if (snake2[0].x == snake1[i].x && cmpY1 == snake1[i].y) temp = false;
                         for (int i = 1; i < snake2_len; i++)
-                            if (snake2[0].x == snake2[i].x && snake2[0].y + step == snake2[i].y) temp = false;
+                            if (snake2[0].x == snake2[i].x && cmpY1 == snake2[i].y) temp = false;
                         if (temp)
                         {
                             direction2 = DOWN;
@@ -2096,15 +2102,15 @@ void game_pve()
                     }
                 }
             for (int i = 1; i < snake2_len; i++)
-                if (snake2[0].x == snake2[i].x && snake2[0].y - step == snake2[i].y && direction2 == UP)
+                if (snake2[0].x == snake2[i].x && cmpY == snake2[i].y && direction2 == UP)
                 {
-                    if (snake2[0].x - step != min_pos)
+                    if (cmpX != min_pos)
                     {
                         bool temp = true;
                         for (int i = 0; i < snake1_len; i++)
-                            if (snake2[0].x - step == snake1[i].x && snake2[0].y == snake1[i].y) temp = false;
+                            if (cmpX == snake1[i].x && snake2[0].y == snake1[i].y) temp = false;
                         for (int i = 1; i < snake2_len; i++)
-                            if (snake2[0].x - step == snake2[i].x && snake2[0].y == snake2[i].y) temp = false;
+                            if (cmpX == snake2[i].x && snake2[0].y == snake2[i].y) temp = false;
                         if (temp && direction2 != RIGHT)
                         {
                             direction2 = LEFT;
@@ -2112,13 +2118,13 @@ void game_pve()
                             dir2_changed = 1;
                         }
                     }
-                    else if (snake2[0].x + step != max_pos)
+                    else if (cmpX1 != max_pos)
                     {
                         bool temp = true;
                         for (int i = 0; i < snake1_len; i++)
-                            if (snake2[0].x + step == snake1[i].x && snake2[0].y == snake1[i].y) temp = false;
+                            if (cmpX1 == snake1[i].x && snake2[0].y == snake1[i].y) temp = false;
                         for (int i = 1; i < snake2_len; i++)
-                            if (snake2[0].x + step == snake2[i].x && snake2[0].y == snake2[i].y) temp = false;
+                            if (cmpX1 == snake2[i].x && snake2[0].y == snake2[i].y) temp = false;
                         if (temp && direction2 != LEFT)
                         {
                             direction2 = RIGHT;
@@ -2128,15 +2134,15 @@ void game_pve()
                     }
                 }
             for (int i = 1; i < snake2_len; i++)
-                if (snake2[0].x == snake2[i].x && snake2[0].y + step == snake2[i].y && direction2 == DOWN)
+                if (snake2[0].x == snake2[i].x && cmpY1 == snake2[i].y && direction2 == DOWN)
                 {
-                    if (snake2[0].x - step != min_pos)
+                    if (cmpX != min_pos)
                     {
                         bool temp = true;
                         for (int i = 0; i < snake1_len; i++)
-                            if (snake2[0].x - step == snake1[i].x && snake2[0].y == snake1[i].y) temp = false;
+                            if (cmpX == snake1[i].x && snake2[0].y == snake1[i].y) temp = false;
                         for (int i = 1; i < snake2_len; i++)
-                            if (snake2[0].x - step == snake2[i].x && snake2[0].y == snake2[i].y) temp = false;
+                            if (cmpX == snake2[i].x && snake2[0].y == snake2[i].y) temp = false;
                         if (temp && direction2 != RIGHT)
                         {
                             direction2 = LEFT;
@@ -2144,13 +2150,13 @@ void game_pve()
                             dir2_changed = 1;
                         }
                     }
-                    else if (snake2[0].x + step != max_pos)
+                    else if (cmpX1 != max_pos)
                     {
                         bool temp = true;
                         for (int i = 0; i < snake1_len; i++)
-                            if (snake2[0].x + step == snake1[i].x && snake2[0].y == snake1[i].y) temp = false;
+                            if (cmpX1 == snake1[i].x && snake2[0].y == snake1[i].y) temp = false;
                         for (int i = 1; i < snake2_len; i++)
-                            if (snake2[0].x + step == snake2[i].x && snake2[0].y == snake2[i].y) temp = false;
+                            if (cmpX1 == snake2[i].x && snake2[0].y == snake2[i].y) temp = false;
                         if (temp && direction2 != LEFT)
                         {
                             direction2 = RIGHT;
@@ -2161,15 +2167,15 @@ void game_pve()
                 }
 
             for (int i = 0; i < snake1_len; i++)
-                if (snake2[0].x + step == snake1[i].x && snake2[0].y == snake1[i].y && direction2 == RIGHT)
+                if (cmpX1 == snake1[i].x && snake2[0].y == snake1[i].y && direction2 == RIGHT)
                 {
-                    if (snake2[0].y - step != min_pos)
+                    if (cmpY != min_pos)
                     {
                         bool temp = true;
                         for (int i = 0; i < snake1_len; i++)
-                            if (snake2[0].x == snake1[i].x && snake2[0].y - step == snake1[i].y) temp = false;
+                            if (snake2[0].x == snake1[i].x && cmpY == snake1[i].y) temp = false;
                         for (int i = 1; i < snake2_len; i++)
-                            if (snake2[0].x == snake2[i].x && snake2[0].y - step == snake2[i].y) temp = false;
+                            if (snake2[0].x == snake2[i].x && cmpY == snake2[i].y) temp = false;
                         if (temp)
                         {
                             direction2 = UP;
@@ -2177,13 +2183,13 @@ void game_pve()
                             dir2_changed = 1;
                         }
                     }
-                    else if (snake2[0].y + step != max_pos)
+                    else if (cmpY1 != max_pos)
                     {
                         bool temp = true;
                         for (int i = 0; i < snake1_len; i++)
-                            if (snake2[0].x == snake1[i].x && snake2[0].y + step == snake1[i].y) temp = false;
+                            if (snake2[0].x == snake1[i].x && cmpY1 == snake1[i].y) temp = false;
                         for (int i = 1; i < snake2_len; i++)
-                            if (snake2[0].x == snake2[i].x && snake2[0].y + step == snake2[i].y) temp = false;
+                            if (snake2[0].x == snake2[i].x && cmpY1 == snake2[i].y) temp = false;
                         if (temp)
                         {
                             direction2 = DOWN;
@@ -2193,15 +2199,15 @@ void game_pve()
                     }
                 }
             for (int i = 0; i < snake1_len; i++)
-                if (snake2[0].x - step == snake1[i].x && snake2[0].y == snake1[i].y && direction2 == LEFT)
+                if (cmpX == snake1[i].x && snake2[0].y == snake1[i].y && direction2 == LEFT)
                 {
-                    if (snake2[0].y - step != min_pos)
+                    if (cmpY != min_pos)
                     {
                         bool temp = true;
                         for (int i = 0; i < snake1_len; i++)
-                            if (snake2[0].x == snake1[i].x && snake2[0].y - step == snake1[i].y) temp = false;
+                            if (snake2[0].x == snake1[i].x && cmpY == snake1[i].y) temp = false;
                         for (int i = 1; i < snake2_len; i++)
-                            if (snake2[0].x == snake2[i].x && snake2[0].y - step == snake2[i].y) temp = false;
+                            if (snake2[0].x == snake2[i].x && cmpY == snake2[i].y) temp = false;
                         if (temp)
                         {
                             direction2 = UP;
@@ -2209,13 +2215,13 @@ void game_pve()
                             dir2_changed = 1;
                         }
                     }
-                    else if (snake2[0].y + step != max_pos)
+                    else if (cmpY1 != max_pos)
                     {
                         bool temp = true;
                         for (int i = 0; i < snake1_len; i++)
-                            if (snake2[0].x == snake1[i].x && snake2[0].y + step == snake1[i].y) temp = false;
+                            if (snake2[0].x == snake1[i].x && cmpY1 == snake1[i].y) temp = false;
                         for (int i = 1; i < snake2_len; i++)
-                            if (snake2[0].x == snake2[i].x && snake2[0].y + step == snake2[i].y) temp = false;
+                            if (snake2[0].x == snake2[i].x && cmpY1 == snake2[i].y) temp = false;
                         if (temp)
                         {
                             direction2 = DOWN;
@@ -2225,15 +2231,15 @@ void game_pve()
                     }
                 }
             for (int i = 0; i < snake1_len; i++)
-                if (snake2[0].x == snake1[i].x && snake2[0].y - step == snake1[i].y && direction2 == UP)
+                if (snake2[0].x == snake1[i].x && cmpY == snake1[i].y && direction2 == UP)
                 {
-                    if (snake2[0].x - step != min_pos)
+                    if (cmpX != min_pos)
                     {
                         bool temp = true;
                         for (int i = 0; i < snake1_len; i++)
-                            if (snake2[0].x - step == snake1[i].x && snake2[0].y == snake1[i].y) temp = false;
+                            if (cmpX == snake1[i].x && snake2[0].y == snake1[i].y) temp = false;
                         for (int i = 1; i < snake2_len; i++)
-                            if (snake2[0].x - step == snake2[i].x && snake2[0].y == snake2[i].y) temp = false;
+                            if (cmpX == snake2[i].x && snake2[0].y == snake2[i].y) temp = false;
                         if (temp && direction2 != RIGHT)
                         {
                             direction2 = LEFT;
@@ -2241,13 +2247,13 @@ void game_pve()
                             dir2_changed = 1;
                         }
                     }
-                    else if (snake2[0].x + step != max_pos)
+                    else if (cmpX1 != max_pos)
                     {
                         bool temp = true;
                         for (int i = 0; i < snake1_len; i++)
-                            if (snake2[0].x + step == snake1[i].x && snake2[0].y == snake1[i].y) temp = false;
+                            if (cmpX1 == snake1[i].x && snake2[0].y == snake1[i].y) temp = false;
                         for (int i = 1; i < snake2_len; i++)
-                            if (snake2[0].x + step == snake2[i].x && snake2[0].y == snake2[i].y) temp = false;
+                            if (cmpX1 == snake2[i].x && snake2[0].y == snake2[i].y) temp = false;
                         if (temp && direction2 != LEFT)
                         {
                             direction2 = RIGHT;
@@ -2257,15 +2263,15 @@ void game_pve()
                     }
                 }
             for (int i = 0; i < snake1_len; i++)
-                if (snake2[0].x == snake1[i].x && snake2[0].y + step == snake1[i].y && direction2 == DOWN)
+                if (snake2[0].x == snake1[i].x && cmpY1 == snake1[i].y && direction2 == DOWN)
                 {
-                    if (snake2[0].x - step != min_pos)
+                    if (cmpX != min_pos)
                     {
                         bool temp = true;
                         for (int i = 0; i < snake1_len; i++)
-                            if (snake2[0].x - step == snake1[i].x && snake2[0].y == snake1[i].y) temp = false;
+                            if (cmpX == snake1[i].x && snake2[0].y == snake1[i].y) temp = false;
                         for (int i = 1; i < snake2_len; i++)
-                            if (snake2[0].x - step == snake2[i].x && snake2[0].y == snake2[i].y) temp = false;
+                            if (cmpX == snake2[i].x && snake2[0].y == snake2[i].y) temp = false;
                         if (temp && direction2 != RIGHT)
                         {
                             direction2 = LEFT;
@@ -2273,13 +2279,13 @@ void game_pve()
                             dir2_changed = 1;
                         }
                     }
-                    else if (snake2[0].x + step != max_pos)
+                    else if (cmpX1 != max_pos)
                     {
                         bool temp = true;
                         for (int i = 0; i < snake1_len; i++)
-                            if (snake2[0].x + step == snake1[i].x && snake2[0].y == snake1[i].y) temp = false;
+                            if (cmpX1 == snake1[i].x && snake2[0].y == snake1[i].y) temp = false;
                         for (int i = 1; i < snake2_len; i++)
-                            if (snake2[0].x + step == snake2[i].x && snake2[0].y == snake2[i].y) temp = false;
+                            if (cmpX1 == snake2[i].x && snake2[0].y == snake2[i].y) temp = false;
                         if (temp && direction2 != LEFT)
                         {
                             direction2 = RIGHT;
@@ -2307,7 +2313,7 @@ void game_pve()
             }
 
             if (event.type == event.MouseButtonReleased && event.mouseButton.button == Mouse::Left && \
-                IntRect(max_pos - 2 * step, min_pos + 1.5 * step, 50, 50).contains(Mouse::getPosition(window)) || \
+                IntRect(max_pos - step << 1, min_pos + 1.5 * step, 50, 50).contains(Mouse::getPosition(window)) || \
                 event.type == Event::KeyReleased && event.key.code == Keyboard::P)
             {
                 if (pause_game)
